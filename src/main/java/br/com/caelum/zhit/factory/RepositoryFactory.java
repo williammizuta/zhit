@@ -23,16 +23,27 @@ public class RepositoryFactory {
 	public Repository build(String name) {
 		File repositoryRoot = new File(path, name);
 		repositoryRoot.mkdir();
+		copyDotGit(new File(repositoryRoot, ".git"));
 		
-		URI url;
+		return Repository.local(repositoryRoot);
+	}
+
+	private void copyDotGit(File destDir) {
 		try {
+			URI url;
 			url = getClass().getResource("/git-sample").toURI();
-			FileUtils.copyDirectory(new File(url), new File(repositoryRoot, ".git"));
+			FileUtils.copyDirectory(new File(url), destDir);
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
-		
-		return new Repository(repositoryRoot);
+	}
+
+	public Repository buildBare(String name) {
+		File repositoryRoot = new File(path, name);
+		repositoryRoot.mkdir();
+		copyDotGit(repositoryRoot);
+
+		return Repository.bare(repositoryRoot);
 	}
 
 }

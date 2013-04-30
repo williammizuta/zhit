@@ -49,12 +49,21 @@ public class RepositoryFactoryTest {
 	public void should_create_repository_root_directory() {
 		Repository repository = factory.build(projectName);
 		Assert.assertTrue(repository.getPath().exists());
+		assertFalse(repository.isBare());
 	}
 	
 	@Test
 	public void should_create_git_internals_files() {
 		Repository repository = factory.build(projectName);
 		assertTrue(new File(repository.getPath(), ".git").exists());
+		assertFalse(repository.isBare());
+	}
+	
+	@Test
+	public void should_create_a_bare_repository() {
+		Repository repository = factory.buildBare(projectName);
+		assertTrue(repository.isBare());
+		assertTrue(new File(repository.getPath(), "HEAD").exists());
 	}
 	
 }

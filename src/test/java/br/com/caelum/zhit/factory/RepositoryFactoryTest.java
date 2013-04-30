@@ -1,0 +1,60 @@
+package br.com.caelum.zhit.factory;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import br.com.caelum.zhit.model.Repository;
+
+public class RepositoryFactoryTest {
+
+	private static File repositoriesPath;
+	private String projectName;
+	private RepositoryFactory factory;
+
+	@BeforeClass
+	public static void setUp() {
+		repositoriesPath = new File("src/test/resources/repositories/");
+		repositoriesPath.mkdirs();
+	}
+	
+	@Before
+	public void before() {
+		projectName = "zhit";
+		factory = new RepositoryFactory(repositoriesPath);
+	}
+	
+	@AfterClass
+	public static void tearDown() throws IOException {
+		FileUtils.deleteDirectory(repositoriesPath);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void should_check_if_path_does_not_exits() {
+		String pathname = "/home/zhit";
+		String projectName = "zhit";
+		RepositoryFactory factory = new RepositoryFactory(new File(pathname));
+		factory.build(projectName);
+	}
+	
+	@Test
+	public void should_create_repository_root_directory() {
+		Repository repository = factory.build(projectName);
+		Assert.assertTrue(repository.getPath().exists());
+	}
+	
+	@Test
+	public void should_create_git_internals_files() {
+		Repository repository = factory.build(projectName);
+		assertTrue(new File(repository.getPath(), ".git").exists());
+	}
+	
+}

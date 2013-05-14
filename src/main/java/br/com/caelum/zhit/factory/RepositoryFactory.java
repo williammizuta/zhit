@@ -29,13 +29,34 @@ public class RepositoryFactory {
 	}
 
 	private void copyDotGit(File destDir) {
+		destDir.mkdir();
+		File hooks = new File(destDir, "hooks");
+		hooks.mkdir();
+		File info = new File(destDir, "info");
+		info.mkdir();
+		
 		try {
-			URI url;
-			url = getClass().getResource("/git-sample").toURI();
-			FileUtils.copyDirectory(new File(url), destDir);
+			copyGitSampleResource(destDir, "HEAD");
+			copyGitSampleResource(destDir, "config");
+			copyGitSampleResource(destDir, "description");
+            copyGitSampleResource(hooks, "hooks/applypatch-msg.sample");
+            copyGitSampleResource(hooks, "hooks/commit-msg.sample");
+            copyGitSampleResource(hooks, "hooks/post-update.sample");
+            copyGitSampleResource(hooks, "hooks/pre-applypatch.sample");
+            copyGitSampleResource(hooks, "hooks/pre-commit.sample");
+            copyGitSampleResource(hooks, "hooks/pre-rebase.sample");
+            copyGitSampleResource(hooks, "hooks/prepare-commit-msg.sample");
+            copyGitSampleResource(hooks, "hooks/update.sample");
+            copyGitSampleResource(info, "info/exclude");
 		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+	}
+
+	private void copyGitSampleResource(File destDir, String resource) throws URISyntaxException,
+			IOException {
+		URI url = getClass().getResource("/git-sample/" + resource).toURI();
+		FileUtils.copyFileToDirectory(new File(url), destDir);
 	}
 
 	public Repository buildBare(String name) {

@@ -2,8 +2,9 @@ package br.com.caelum.zhit.factory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 
@@ -30,10 +31,12 @@ public class RepositoryFactory {
 
 	private void copyDotGit(File destDir) {
 		destDir.mkdir();
-		File hooks = new File(destDir, "hooks");
-		hooks.mkdir();
-		File info = new File(destDir, "info");
-		info.mkdir();
+		mkdir(destDir, "refs");
+		File info = mkdir(destDir, "info");
+		File hooks = mkdir(destDir, "hooks");
+		File objects = mkdir(destDir, "objects");
+		mkdir(objects, "info");
+		mkdir(objects, "pack");
 		
 		try {
 			copyGitSampleResource(destDir, "HEAD");
@@ -53,10 +56,19 @@ public class RepositoryFactory {
 		}
 	}
 
+	private File mkdir(File parent, String dest) {
+		File info = new File(parent, dest);
+		info.mkdir();
+		return info;
+	}
+
 	private void copyGitSampleResource(File destDir, String resource) throws URISyntaxException,
 			IOException {
-		URI url = getClass().getResource("/git-sample/" + resource).toURI();
-		FileUtils.copyFileToDirectory(new File(url), destDir);
+		InputStream is = getClass().getResourceAsStream("/git-sample/" + resource);
+		String content = new Scanner(is).useDelimiter("\\A").next();
+		String[] split = resource.split("/");
+		String fileName = split[split.length - 1];
+		FileUtils.write(new File(destDir, fileName), content);
 	}
 
 	public Repository buildBare(String name) {

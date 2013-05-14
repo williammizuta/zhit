@@ -75,8 +75,20 @@ public class RepositoryFactory {
 		File repositoryRoot = new File(path, name);
 		repositoryRoot.mkdir();
 		copyDotGit(repositoryRoot);
+		rewriteConfig(repositoryRoot);
 
 		return Repository.bare(repositoryRoot);
+	}
+
+	private void rewriteConfig(File repositoryRoot) {
+		try {
+			File file = new File(repositoryRoot, "config");
+			String content = FileUtils.readFileToString(file);
+			String newContent = content.replace("bare = false", "bare = true");
+			FileUtils.write(file, newContent);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

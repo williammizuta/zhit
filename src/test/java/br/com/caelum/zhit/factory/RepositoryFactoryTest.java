@@ -67,4 +67,11 @@ public class RepositoryFactoryTest {
 		assertTrue(new File(repository.getPath(), "HEAD").exists());
 	}
 	
+	@Test
+	public void should_create_a_bare_repository_and_rewrite_config_file() throws IOException {
+		Repository repository = factory.buildBare(projectName);
+		String config = FileUtils.readFileToString(new File(repository.getPath(), "config"));
+		assertTrue(config.contains("bare = true"));
+	}
+	
 }

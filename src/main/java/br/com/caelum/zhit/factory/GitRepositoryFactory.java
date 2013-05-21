@@ -8,25 +8,25 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 
-import br.com.caelum.zhit.model.Repository;
+import br.com.caelum.zhit.model.GitRepository;
 
-public class RepositoryFactory {
+public class GitRepositoryFactory {
 
 	private File path;
 
-	public RepositoryFactory(File path) {
+	public GitRepositoryFactory(File path) {
 		if (!path.exists()) {
 			throw new IllegalArgumentException(path.getPath() + " doesn't exist");
 		}
 		this.path = path;
 	}
 	
-	public Repository build(String name) {
+	public GitRepository build(String name) {
 		File repositoryRoot = new File(path, name);
 		repositoryRoot.mkdir();
 		copyDotGit(new File(repositoryRoot, ".git"));
 		
-		return Repository.local(repositoryRoot);
+		return GitRepository.local(repositoryRoot);
 	}
 
 	private void copyDotGit(File destDir) {
@@ -71,13 +71,13 @@ public class RepositoryFactory {
 		FileUtils.write(new File(destDir, fileName), content);
 	}
 
-	public Repository buildBare(String name) {
+	public GitRepository buildBare(String name) {
 		File repositoryRoot = new File(path, name);
 		repositoryRoot.mkdir();
 		copyDotGit(repositoryRoot);
 		rewriteConfig(repositoryRoot);
 
-		return Repository.bare(repositoryRoot);
+		return GitRepository.bare(repositoryRoot);
 	}
 
 	private void rewriteConfig(File repositoryRoot) {

@@ -13,13 +13,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.caelum.zhit.model.Repository;
+import br.com.caelum.zhit.model.GitRepository;
 
-public class RepositoryFactoryTest {
+public class GitRepositoryFactoryTest {
 
 	private static File repositoriesPath;
 	private String projectName;
-	private RepositoryFactory factory;
+	private GitRepositoryFactory factory;
 
 	@BeforeClass
 	public static void setUp() {
@@ -30,7 +30,7 @@ public class RepositoryFactoryTest {
 	@Before
 	public void before() {
 		projectName = "zhit";
-		factory = new RepositoryFactory(repositoriesPath);
+		factory = new GitRepositoryFactory(repositoriesPath);
 	}
 	
 	@AfterClass
@@ -42,34 +42,34 @@ public class RepositoryFactoryTest {
 	public void should_check_if_path_does_not_exits() {
 		String pathname = "/home/zhit";
 		String projectName = "zhit";
-		RepositoryFactory factory = new RepositoryFactory(new File(pathname));
+		GitRepositoryFactory factory = new GitRepositoryFactory(new File(pathname));
 		factory.build(projectName);
 	}
 	
 	@Test
 	public void should_create_repository_root_directory() {
-		Repository repository = factory.build(projectName);
+		GitRepository repository = factory.build(projectName);
 		Assert.assertTrue(repository.getPath().exists());
 		assertFalse(repository.isBare());
 	}
 	
 	@Test
 	public void should_create_git_internals_files() {
-		Repository repository = factory.build(projectName);
+		GitRepository repository = factory.build(projectName);
 		assertTrue(new File(repository.getPath(), ".git").exists());
 		assertFalse(repository.isBare());
 	}
 	
 	@Test
 	public void should_create_a_bare_repository() {
-		Repository repository = factory.buildBare(projectName);
+		GitRepository repository = factory.buildBare(projectName);
 		assertTrue(repository.isBare());
 		assertTrue(new File(repository.getPath(), "HEAD").exists());
 	}
 	
 	@Test
 	public void should_create_a_bare_repository_and_rewrite_config_file() throws IOException {
-		Repository repository = factory.buildBare(projectName);
+		GitRepository repository = factory.buildBare(projectName);
 		String config = FileUtils.readFileToString(new File(repository.getPath(), "config"));
 		assertTrue(config.contains("bare = true"));
 	}

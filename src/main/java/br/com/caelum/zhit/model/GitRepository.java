@@ -30,12 +30,12 @@ public class GitRepository {
 		return bare;
 	}
 
-	public GitObject head() {
+	public CommitObject head() {
 		File head = new File(dotGit(), "HEAD");
 		String headContent = ZhitFileUtils.readFileToString(head);
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit(), headBranch));
-		return new GitObject(headHash);
+		return new CommitObject(headHash, dotGit());
 	}
 
 	private File dotGit() {

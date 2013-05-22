@@ -2,6 +2,7 @@ package br.com.caelum.zhit.model;
 
 import java.io.File;
 
+import br.com.caelum.zhit.factory.CommitFactory;
 import br.com.caelum.zhit.infra.GitObjectInflater;
 import br.com.caelum.zhit.util.ZhitFileUtils;
 
@@ -31,12 +32,12 @@ public class GitRepository {
 		return bare;
 	}
 
-	public CommitObject head() {
+	public GitObject<Commit> head() {
 		File head = new File(dotGit(), "HEAD");
 		String headContent = ZhitFileUtils.readFileToString(head);
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit(), headBranch));
-		return new CommitObject(headHash, dotGit(), new GitObjectInflater());
+		return new GitObject<Commit>(headHash, dotGit(), new GitObjectInflater(), new CommitFactory());
 	}
 
 	private File dotGit() {

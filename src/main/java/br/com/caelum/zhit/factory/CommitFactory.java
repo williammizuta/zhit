@@ -6,8 +6,9 @@ import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.Commit;
 
 
-public class CommitFactory {
+public class CommitFactory implements GitObjectFactory<Commit> {
 	
+	@Override
 	public Commit build(String objectContent) {
 		Scanner scanner = new Scanner(objectContent);
 		Author author = null;

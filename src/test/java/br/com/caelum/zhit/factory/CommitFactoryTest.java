@@ -16,7 +16,8 @@ public class CommitFactoryTest {
 			"\n" +
 			"first commit\n";
 		Commit commit = new CommitFactory().build(objectContent);
-		assertEquals("Francisco Sokol <chico.sokol@gmail.com> 1369140112 -0300", commit.author());
+		assertEquals("chico.sokol@gmail.com", commit.author().email());
+		assertEquals("Francisco Sokol", commit.author().name());
 		assertEquals("first commit", commit.message());
 		assertEquals("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078", commit.tree());
 	}

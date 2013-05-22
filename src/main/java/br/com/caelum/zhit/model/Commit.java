@@ -3,10 +3,10 @@ package br.com.caelum.zhit.model;
 public class Commit {
 
 	private final String message;
-	private final String author;
 	private final String tree;
+	private final Author author;
 
-	public Commit(String author, String message, String tree) {
+	public Commit(Author author, String message, String tree) {
 		this.author = author;
 		this.message = message;
 		this.tree = tree;
@@ -15,14 +15,13 @@ public class Commit {
 	public String message() {
 		return message;
 	}
-	
-	public String author() {
-		return author;
-	}
 
 	public String tree() {
 		return tree;
 	}
 
+	public Author author() {
+		return author;
+	}
 
 }

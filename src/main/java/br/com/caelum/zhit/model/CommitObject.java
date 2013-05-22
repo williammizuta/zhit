@@ -3,17 +3,20 @@ package br.com.caelum.zhit.model;
 import static java.io.File.separator;
 
 import java.io.File;
+import java.util.zip.InflaterInputStream;
 
 import br.com.caelum.zhit.factory.CommitFactory;
-import br.com.caelum.zhit.util.ZhitFileUtils;
+import br.com.caelum.zhit.infra.GitObjectInflater;
 
 public class CommitObject {
 
 	private final String sha1;
 	private final File dotGit;
+	private final GitObjectInflater gitObjectInflater;
 
-	public CommitObject(String sha1, File dotGit) {
+	public CommitObject(String sha1, File dotGit, GitObjectInflater gitObjectInflater) {
 		this.dotGit = dotGit;
+		this.gitObjectInflater = gitObjectInflater;
 		this.sha1 = sha1.trim();
 	}
 	
@@ -22,9 +25,9 @@ public class CommitObject {
 	}
 
 	public Commit extractCommit() {
-		byte[] objectFileBytes = ZhitFileUtils.readFileToByteArray(objectFile());
-		String objectContents = ZhitFileUtils.decompressToString(objectFileBytes);
-		return new CommitFactory().build(objectContents);
+		InflaterInputStream inflaterInputStream;
+		return new CommitFactory().build(gitObjectInflater.inflate(objectFile()));
+		
 	}
 
 	private File objectFile() {

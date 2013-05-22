@@ -11,16 +11,20 @@ public class CommitFactory {
 		Scanner scanner = new Scanner(objectContent);
 		String author = "";
 		String message = "";
+		String tree = "";
 		while(scanner.hasNext()) {
 			String  currentLine = scanner.nextLine();
 			if (currentLine.startsWith("author")) {
 				author = currentLine.split("author ")[1];
 			}
+			if (currentLine.startsWith("tree")) {
+				tree = currentLine.split("tree ")[1];
+			}
 			if (currentLine.matches("\\s*")) {
 				message = scanner.useDelimiter("\\z").next().trim();
 			}
 		}
-		return new Commit(author, message);
+		return new Commit(author, message, tree);
 	}
 	
 	

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import br.com.caelum.zhit.model.Commit;
+import br.com.caelum.zhit.model.GitCommit;
 
 public class CommitFactoryTest {
 
@@ -15,7 +15,7 @@ public class CommitFactoryTest {
 			"committer Francisco Sokol <chico.sokol@gmail.com> 1369140112 -0300\n" +
 			"\n" +
 			"first commit\n";
-		Commit commit = new CommitFactory().build(objectContent);
+		GitCommit commit = new GitCommitFactory().build(objectContent);
 		assertEquals("chico.sokol@gmail.com", commit.author().email());
 		assertEquals("Francisco Sokol", commit.author().name());
 		assertEquals("first commit", commit.message());

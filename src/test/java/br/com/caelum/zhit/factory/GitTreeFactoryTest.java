@@ -14,7 +14,7 @@ public class GitTreeFactoryTest {
 		GitTree tree = treeFactory.build("040000 tree 8add0d07efc6ba027407c82740a001cfcbc7b772    dir\n" +
 				"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391    file");
 		
-		assertEquals("100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391    file", tree.files().get(0));
+		assertEquals("100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391    file", tree.blobs().get(0));
 		assertEquals("040000 tree 8add0d07efc6ba027407c82740a001cfcbc7b772    dir", tree.trees().get(0));
 		
 	}

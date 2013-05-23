@@ -20,13 +20,22 @@ public class GitRepositoryFactory {
 		}
 		this.path = path;
 	}
-	
+
 	public GitRepository build(String name) {
 		File repositoryRoot = new File(path, name);
 		repositoryRoot.mkdir();
 		copyDotGit(new File(repositoryRoot, ".git"));
 		
 		return GitRepository.local(repositoryRoot);
+	}
+
+	public GitRepository buildBare(String name) {
+		File repositoryRoot = new File(path, name);
+		repositoryRoot.mkdir();
+		copyDotGit(repositoryRoot);
+		rewriteConfig(repositoryRoot);
+
+		return GitRepository.bare(repositoryRoot);
 	}
 
 	private void copyDotGit(File destDir) {
@@ -71,15 +80,6 @@ public class GitRepositoryFactory {
 		String content = scanner.useDelimiter("\\A").next();
 		FileUtils.write(new File(destDir, fileName), content);
 		scanner.close();
-	}
-
-	public GitRepository buildBare(String name) {
-		File repositoryRoot = new File(path, name);
-		repositoryRoot.mkdir();
-		copyDotGit(repositoryRoot);
-		rewriteConfig(repositoryRoot);
-
-		return GitRepository.bare(repositoryRoot);
 	}
 
 	private void rewriteConfig(File repositoryRoot) {

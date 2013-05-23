@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import br.com.caelum.zhit.model.GitTree;
 
-
 public class GitTreeFactory implements GitObjectFactory<GitTree> {
 
 	@Override

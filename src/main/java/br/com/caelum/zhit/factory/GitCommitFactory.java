@@ -3,13 +3,13 @@ package br.com.caelum.zhit.factory;
 import java.util.Scanner;
 
 import br.com.caelum.zhit.model.Author;
-import br.com.caelum.zhit.model.Commit;
+import br.com.caelum.zhit.model.GitCommit;
 
 
-public class CommitFactory implements GitObjectFactory<Commit> {
-	
+public class GitCommitFactory implements GitObjectFactory<GitCommit> {
+
 	@Override
-	public Commit build(String objectContent) {
+	public GitCommit build(String objectContent) {
 		Scanner scanner = new Scanner(objectContent);
 		Author author = null;
 		String message = "";
@@ -27,9 +27,7 @@ public class CommitFactory implements GitObjectFactory<Commit> {
 			}
 		}
 		scanner.close();
-		return new Commit(author, message, tree);
+		return new GitCommit(author, message, tree);
 	}
-	
-	
 
 }

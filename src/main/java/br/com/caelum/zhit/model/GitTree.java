@@ -5,15 +5,15 @@ import java.util.List;
 public class GitTree {
 
 	private List<String> trees;
-	private List<String> files;
+	private List<String> blobs;
 	
-	public GitTree(List<String> trees, List<String> files) {
+	public GitTree(List<String> trees, List<String> blobs) {
 		this.trees = trees;
-		this.files = files;
+		this.blobs = blobs;
 	}
 
-	public List<String> files() {
-		return files;
+	public List<String> blobs() {
+		return blobs;
 	}
 	
 	public List<String> trees() {

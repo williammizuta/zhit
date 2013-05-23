@@ -2,8 +2,8 @@ package br.com.caelum.zhit.model;
 
 public class Author {
 
-	private String name;
-	private String email;
+	private final String name;
+	private final String email;
 
 	private Author(String name, String email) {
 		this.name = name;
@@ -24,6 +24,5 @@ public class Author {
 	public String name() {
 		return name;
 	}
-
 
 }

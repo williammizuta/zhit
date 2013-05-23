@@ -1,12 +1,12 @@
 package br.com.caelum.zhit.model;
 
-public class Commit {
+public class GitCommit {
 
 	private final String message;
 	private final String tree;
 	private final Author author;
 
-	public Commit(Author author, String message, String tree) {
+	public GitCommit(Author author, String message, String tree) {
 		this.author = author;
 		this.message = message;
 		this.tree = tree;

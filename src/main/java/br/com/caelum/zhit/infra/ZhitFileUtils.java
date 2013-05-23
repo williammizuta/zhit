@@ -1,4 +1,4 @@
-package br.com.caelum.zhit.util;
+package br.com.caelum.zhit.infra;
 
 import java.io.File;
 import java.io.IOException;

@@ -62,13 +62,15 @@ public class GitRepositoryFactory {
 		return info;
 	}
 
-	private void copyGitSampleResource(File destDir, String resource) throws URISyntaxException,
-			IOException {
-		InputStream is = getClass().getResourceAsStream("/git-sample/" + resource);
-		String content = new Scanner(is).useDelimiter("\\A").next();
+	private void copyGitSampleResource(File destDir, String resource) throws URISyntaxException, IOException {
 		String[] split = resource.split("/");
 		String fileName = split[split.length - 1];
+
+		InputStream is = getClass().getResourceAsStream("/git-sample/" + resource);
+		Scanner scanner = new Scanner(is);
+		String content = scanner.useDelimiter("\\A").next();
 		FileUtils.write(new File(destDir, fileName), content);
+		scanner.close();
 	}
 
 	public GitRepository buildBare(String name) {

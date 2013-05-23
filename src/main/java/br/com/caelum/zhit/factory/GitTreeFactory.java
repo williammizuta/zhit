@@ -22,9 +22,11 @@ public class GitTreeFactory implements GitObjectFactory<GitTree> {
 			} else if(substring.startsWith("blob")) {
 				files.add(line);
 			} else {
+				scanner.close();
 				throw new IllegalArgumentException("Invalid object type: " + line);
 			}
 		}
+		scanner.close();
 		return new GitTree(trees, files);
 	}
 

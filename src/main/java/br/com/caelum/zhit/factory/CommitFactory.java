@@ -26,6 +26,7 @@ public class CommitFactory implements GitObjectFactory<Commit> {
 				message = scanner.useDelimiter("\\z").next().trim();
 			}
 		}
+		scanner.close();
 		return new Commit(author, message, tree);
 	}
 	

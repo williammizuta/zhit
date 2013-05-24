@@ -1,7 +1,8 @@
 package br.com.caelum.zhit.factory;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static br.com.caelum.zhit.matchers.ZhitMatchers.isAValidBareRepository;
+import static br.com.caelum.zhit.matchers.ZhitMatchers.isAValidNonBareRepository;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,31 +47,15 @@ public class GitRepositoryFactoryTest {
 	}
 
 	@Test
-	public void should_create_repository_root_directory() {
+	public void should_create_a_non_bare_repository() {
 		GitRepository repository = factory.build(projectName);
-		assertTrue(repository.path().exists());
-		assertFalse(repository.isBare());
-	}
-
-	@Test
-	public void should_create_git_internals_files() {
-		GitRepository repository = factory.build(projectName);
-		assertTrue(new File(repository.path(), ".git").exists());
-		assertFalse(repository.isBare());
+		assertThat(repository, isAValidNonBareRepository());
 	}
 
 	@Test
 	public void should_create_a_bare_repository() {
 		GitRepository repository = factory.buildBare(projectName);
-		assertTrue(repository.isBare());
-		assertTrue(new File(repository.path(), "HEAD").exists());
-	}
-
-	@Test
-	public void should_create_a_bare_repository_and_rewrite_config_file() throws IOException {
-		GitRepository repository = factory.buildBare(projectName);
-		String config = FileUtils.readFileToString(new File(repository.path(), "config"));
-		assertTrue(config.contains("bare = true"));
+		assertThat(repository, isAValidBareRepository());
 	}
 
 }

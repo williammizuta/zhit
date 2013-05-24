@@ -1,5 +1,9 @@
 package br.com.caelum.zhit.matchers;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
@@ -7,6 +11,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
+import br.com.caelum.zhit.model.GitRepository;
 
 public class ZhitMatchers {
 
@@ -49,6 +54,55 @@ public class ZhitMatchers {
 			}
 			protected boolean matchesSafely(String commit) {
 				return commit.contains("author") && commit.contains("tree") && commit.contains("committer");
+			}
+		};
+	}
+
+	@Factory
+	public static Matcher<GitRepository> isAValidNonBareRepository() {
+		return new TypeSafeMatcher<GitRepository>() {
+			public void describeTo(Description description) {
+				description.appendText("a valid non bare repository");
+			}
+			protected boolean matchesSafely(GitRepository repository) {
+				try {
+					File repositoryRoot = repository.path();
+					boolean existsRepository = repositoryRoot.exists();
+
+					File dotGit = new File(repositoryRoot, ".git");
+					boolean existsDotGit = dotGit.exists();
+					boolean existsHead = new File(dotGit, "HEAD").exists();
+
+					String config = FileUtils.readFileToString(new File(dotGit, "config"));
+					boolean notBare = !repository.isBare() && config.contains("bare = false");
+
+					return existsRepository && notBare && existsDotGit && existsHead;
+				} catch (IOException e) {
+					return false;
+				}
+			}
+		};
+	}
+
+	@Factory
+	public static Matcher<GitRepository> isAValidBareRepository() {
+		return new TypeSafeMatcher<GitRepository>() {
+			public void describeTo(Description description) {
+				description.appendText("a valid bare repository");
+			}
+			protected boolean matchesSafely(GitRepository repository) {
+				try {
+					File repositoryRoot = repository.path();
+					boolean existsRepository = repositoryRoot.exists();
+
+					String config = FileUtils.readFileToString(new File(repositoryRoot, "config"));
+					boolean bare = repository.isBare() && config.contains("bare = true");
+					boolean existsHead = new File(repository.path(), "HEAD").exists();
+
+					return existsRepository && bare && existsHead;
+				} catch (IOException e) {
+					return false;
+				}
 			}
 		};
 	}

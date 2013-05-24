@@ -5,23 +5,38 @@ import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 
 public class ZhitMatchers {
 
 	@Factory
-	public static Matcher<GitCommit> sameGitCommit(final GitCommit gold) {
+	public static Matcher<Author> sameAuthor(final Author author) {
+		return new TypeSafeMatcher<Author>() {
+			public void describeTo(Description description) {
+				description.appendText(author.toString());
+			}
+			protected boolean matchesSafely(Author testingAuthor) {
+				boolean sameName = author.name().equals(testingAuthor.name());
+				boolean sameEmail = author.email().equals(testingAuthor.email());
+
+				return sameName && sameEmail;
+			}
+		};
+	}
+
+	@Factory
+	public static Matcher<GitCommit> sameGitCommit(final GitCommit commit) {
 		return new TypeSafeMatcher<GitCommit>() {
 			public void describeTo(Description description) {
-				description.appendText(gold.toString());
+				description.appendText(commit.toString());
 			}
-			protected boolean matchesSafely(GitCommit commit) {
-				boolean sameTree = gold.tree().equals(commit.tree());
-				boolean sameAuthorName = gold.author().name().equals(commit.author().name());
-				boolean sameAuthorEmail = gold.author().email().equals(commit.author().email());
-				boolean sameMessage = gold.message().equals(commit.message());
+			protected boolean matchesSafely(GitCommit testingCommit) {
+				boolean sameTree = commit.tree().equals(testingCommit.tree());
+				boolean sameAuthor = sameAuthor(commit.author()).matches(testingCommit.author());
+				boolean sameMessage = commit.message().equals(testingCommit.message());
 
-				return sameTree && sameAuthorName && sameAuthorEmail && sameMessage;
+				return sameTree && sameAuthor && sameMessage;
 			}
 		};
 	}

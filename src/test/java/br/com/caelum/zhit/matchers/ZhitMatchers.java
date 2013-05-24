@@ -41,4 +41,16 @@ public class ZhitMatchers {
 		};
 	}
 
+	@Factory
+	public static Matcher<String> isAValidGitCommit() {
+		return new TypeSafeMatcher<String>() {
+			public void describeTo(Description description) {
+				description.appendText("a valid commit content with tree, author and committer");
+			}
+			protected boolean matchesSafely(String commit) {
+				return commit.contains("author") && commit.contains("tree") && commit.contains("committer");
+			}
+		};
+	}
+
 }

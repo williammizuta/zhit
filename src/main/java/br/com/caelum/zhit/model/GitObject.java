@@ -11,16 +11,20 @@ public class GitObject<T> {
 
 	private final String sha1;
 	private final GitObjectParser<T> factory;
+	private final GitRepository gitRepository;
 
-	public GitObject(String sha1, GitObjectParser<T> factory) {
+	public GitObject(String sha1, GitObjectParser<T> factory, GitRepository gitRepository) {
+		this.gitRepository = gitRepository;
 		this.sha1 = sha1.trim();
 		this.factory = factory;
 	}
 	
-	public T extract(File dotGit, GitObjectInflater inflater) {
+	public T extract() {
+		File dotGit = gitRepository.dotGit();
 		String dir = sha1.substring(0, 2);
 		String fileName = sha1.substring(2);
 		File objectFile = new File(dotGit, "objects" + separator + dir + separator + fileName);
+		GitObjectInflater inflater = new GitObjectInflater();
 		return factory.parse(inflater.inflate(objectFile));
 	}
 

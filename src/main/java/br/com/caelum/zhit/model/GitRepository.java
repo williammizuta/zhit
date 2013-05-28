@@ -2,7 +2,6 @@ package br.com.caelum.zhit.model;
 
 import java.io.File;
 
-import br.com.caelum.zhit.infra.GitObjectInflater;
 import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.parser.GitCommitParser;
 
@@ -32,17 +31,21 @@ public class GitRepository {
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
 		
-		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, new GitCommitParser());
-		GitCommit commit = gitObject.extract(dotGit, new GitObjectInflater());
+		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, new GitCommitParser(), this);
+		GitCommit commit = gitObject.extract();
 		return commit;
 	}
-
+	
 	public File path() {
 		return root.getAbsoluteFile();
 	}
 
 	public boolean isBare() {
 		return bare;
+	}
+
+	File dotGit() {
+		return dotGit;
 	}
 
 }

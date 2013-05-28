@@ -1,4 +1,4 @@
-package br.com.caelum.zhit.factory;
+package br.com.caelum.zhit.parser;
 
 import java.util.Scanner;
 
@@ -6,10 +6,10 @@ import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 
 
-public class GitCommitFactory implements GitObjectFactory<GitCommit> {
+public class GitCommitParser implements GitObjectParser<GitCommit> {
 
 	@Override
-	public GitCommit build(String objectContent) {
+	public GitCommit parse(String objectContent) {
 		Scanner scanner = new Scanner(objectContent);
 		Author author = null;
 		String message = "";

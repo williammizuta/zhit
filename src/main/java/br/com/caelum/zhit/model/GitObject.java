@@ -4,17 +4,17 @@ import static java.io.File.separator;
 
 import java.io.File;
 
-import br.com.caelum.zhit.factory.GitObjectFactory;
 import br.com.caelum.zhit.infra.GitObjectInflater;
+import br.com.caelum.zhit.parser.GitObjectParser;
 
 public class GitObject<T> {
 
 	private final String sha1;
 	private final File dotGit;
 	private final GitObjectInflater inflater;
-	private final GitObjectFactory<T> factory;
+	private final GitObjectParser<T> factory;
 
-	public GitObject(String sha1, File dotGit, GitObjectInflater inflater, GitObjectFactory<T> factory) {
+	public GitObject(String sha1, File dotGit, GitObjectInflater inflater, GitObjectParser<T> factory) {
 		this.sha1 = sha1.trim();
 		this.dotGit = dotGit;
 		this.inflater = inflater;
@@ -22,7 +22,7 @@ public class GitObject<T> {
 	}
 	
 	public T extract() {
-		return factory.build(inflater.inflate(objectFile()));
+		return factory.parse(inflater.inflate(objectFile()));
 	}
 
 	public String sha1() {

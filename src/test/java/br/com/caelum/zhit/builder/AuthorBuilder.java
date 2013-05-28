@@ -32,7 +32,7 @@ public class AuthorBuilder {
 			field.setAccessible(true);
 			field.set(author, name);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

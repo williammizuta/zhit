@@ -26,12 +26,15 @@ public class GitRepository {
 		this.dotGit = bare ? root : new File(root, ".git");
 	}
 
-	public GitObject<GitCommit> head() {
+	public GitCommit head() {
 		File head = new File(dotGit, "HEAD");
 		String headContent = ZhitFileUtils.readFileToString(head);
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
-		return new GitObject<GitCommit>(headHash, dotGit, new GitObjectInflater(), new GitCommitParser());
+		
+		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, new GitCommitParser());
+		GitCommit commit = gitObject.extract(dotGit, new GitObjectInflater());
+		return commit;
 	}
 
 	public File path() {

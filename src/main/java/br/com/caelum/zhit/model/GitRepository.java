@@ -3,6 +3,7 @@ package br.com.caelum.zhit.model;
 import java.io.File;
 
 import br.com.caelum.zhit.infra.ZhitFileUtils;
+import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.parser.GitCommitParser;
 
 public class GitRepository {
@@ -44,7 +45,7 @@ public class GitRepository {
 		return bare;
 	}
 
-	File dotGit() {
+	public File dotGit() {
 		return dotGit;
 	}
 

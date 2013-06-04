@@ -1,10 +1,11 @@
-package br.com.caelum.zhit.model;
+package br.com.caelum.zhit.model.internal;
 
 import static java.io.File.separator;
 
 import java.io.File;
 
 import br.com.caelum.zhit.infra.GitObjectInflater;
+import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.parser.GitObjectParser;
 
 public class GitObject<T> {

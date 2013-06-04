@@ -2,6 +2,7 @@ package br.com.caelum.zhit.matchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
@@ -12,6 +13,9 @@ import org.hamcrest.TypeSafeMatcher;
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
+import br.com.caelum.zhit.model.GitTree;
+import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
+import br.com.caelum.zhit.model.internal.Sha1;
 
 public class ZhitMatchers {
 
@@ -37,11 +41,57 @@ public class ZhitMatchers {
 				description.appendText(commit.toString());
 			}
 			protected boolean matchesSafely(GitCommit testingCommit) {
-				boolean sameTree = commit.tree().equals(testingCommit.tree());
+				boolean sameTree = sameSha1(commit.tree()).matches(testingCommit.tree());
 				boolean sameAuthor = sameAuthor(commit.author()).matches(testingCommit.author());
 				boolean sameMessage = commit.message().equals(testingCommit.message());
 
 				return sameTree && sameAuthor && sameMessage;
+			}
+		};
+	}
+	
+	@Factory
+	public static Matcher<GitTree> sameGitTree(final GitTree tree) {
+		return new TypeSafeMatcher<GitTree>() {
+			public void describeTo(Description description) {
+				description.appendText(tree.toString());
+			}
+			protected boolean matchesSafely(GitTree testingTree) {
+				boolean matches = true;
+				List<RawGitTreeEntry> entries = testingTree.entries();
+				for (int i = 0; i < entries.size(); i++) {
+					RawGitTreeEntry entry = entries.get(i);
+					RawGitTreeEntry testingEntry = testingTree.entries().get(i);
+					matches = matches && sameRawGitTreeEntry(entry).matches(testingEntry);
+				}
+				return matches;
+			}
+		};
+	}
+	
+	@Factory
+	public static Matcher<Sha1> sameSha1(final Sha1 sha1) {
+		return new TypeSafeMatcher<Sha1>() {
+			public void describeTo(Description description) {
+				description.appendText(sha1.toString());
+			}
+			protected boolean matchesSafely(Sha1 testingSha1) {
+				return sha1.hash().equals(testingSha1.hash());
+			}
+		};
+	}
+	
+	@Factory
+	public static Matcher<RawGitTreeEntry> sameRawGitTreeEntry(final RawGitTreeEntry entry) {
+		return new TypeSafeMatcher<RawGitTreeEntry>() {
+			public void describeTo(Description description) {
+				description.appendText(entry.toString());
+			}
+			protected boolean matchesSafely(RawGitTreeEntry testingEntry) {
+				boolean sameSha1 = testingEntry.sha1().equals(entry.sha1());
+				boolean samePermissions = testingEntry.permissions().equals(entry.permissions());
+				boolean sameType = testingEntry.type().equals(entry.type());
+				return sameSha1 && samePermissions && sameType;
 			}
 		};
 	}

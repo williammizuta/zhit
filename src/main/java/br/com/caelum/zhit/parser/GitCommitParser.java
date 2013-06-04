@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
+import br.com.caelum.zhit.model.internal.Sha1;
 
 
 public class GitCommitParser implements GitObjectParser<GitCommit> {
@@ -27,7 +28,7 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 			}
 		}
 		scanner.close();
-		return new GitCommit(author, message, tree);
+		return new GitCommit(author, message, new Sha1(tree));
 	}
 
 }

@@ -6,7 +6,7 @@ public class RawGitTreeEntry {
 	private final Sha1 sha1;
 	private final String type;
 
-	private RawGitTreeEntry(String permissions, String type, Sha1 sha1) {
+	public RawGitTreeEntry(String permissions, String type, Sha1 sha1) {
 		this.permissions = permissions;
 		this.type = type;
 		this.sha1 = sha1;
@@ -33,6 +33,12 @@ public class RawGitTreeEntry {
 
 	public Sha1 sha1() {
 		return sha1;
+	}
+
+	@Override
+	public String toString() {
+		return "RawGitTreeEntry [permissions=" + permissions + ", sha1=" + sha1
+				+ ", type=" + type + "]";
 	}
 
 }

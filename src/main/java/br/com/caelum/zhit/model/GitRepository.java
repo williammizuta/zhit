@@ -31,8 +31,8 @@ public class GitRepository {
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
 		
-		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, new GitCommitParser(), this);
-		GitCommit commit = gitObject.extract();
+		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, this);
+		GitCommit commit = gitObject.extract(new GitCommitParser());
 		return commit;
 	}
 	

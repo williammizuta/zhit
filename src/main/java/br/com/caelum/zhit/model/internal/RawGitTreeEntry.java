@@ -4,9 +4,9 @@ public class RawGitTreeEntry {
 	
 	private final String permissions;
 	private final Sha1 sha1;
-	private final String type;
+	private final EntryType type;
 
-	public RawGitTreeEntry(String permissions, String type, Sha1 sha1) {
+	public RawGitTreeEntry(String permissions, EntryType type, Sha1 sha1) {
 		this.permissions = permissions;
 		this.type = type;
 		this.sha1 = sha1;
@@ -18,7 +18,7 @@ public class RawGitTreeEntry {
 			throw new IllegalArgumentException();
 		}
 		String permissions = fields[0];
-		String type = fields[1];
+		EntryType type = EntryType.valueOf(fields[1].toUpperCase());
 		Sha1 sha1 = new Sha1(fields[2]);
 		return new RawGitTreeEntry(permissions, type, sha1);
 	}
@@ -27,7 +27,7 @@ public class RawGitTreeEntry {
 		return permissions;
 	}
 
-	public String type() {
+	public EntryType type() {
 		return type;
 	}
 

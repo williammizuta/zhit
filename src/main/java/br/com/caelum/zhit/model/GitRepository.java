@@ -4,6 +4,7 @@ import java.io.File;
 
 import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.model.internal.GitObject;
+import br.com.caelum.zhit.model.internal.Sha1;
 import br.com.caelum.zhit.parser.GitCommitParser;
 
 public class GitRepository {
@@ -32,8 +33,8 @@ public class GitRepository {
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
 		
-		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, this);
-		GitCommit commit = gitObject.extract(new GitCommitParser());
+		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(new Sha1(headHash), this);
+		GitCommit commit = gitObject.extract(new GitCommitParser(this));
 		return commit;
 	}
 	

@@ -19,10 +19,10 @@ public class GitCommitParserTest {
 				"committer Francisco Sokol <chico.sokol@gmail.com> 1369140112 -0300\n" +
 				"\n" +
 				"first commit\n";
-		GitCommit commit = new GitCommitParser().parse(objectContent);
+		GitCommit commit = new GitCommitParser(null).parse(objectContent);
 
 		Author author = new AuthorBuilder().withName("Francisco Sokol").withEmail("chico.sokol@gmail.com").create();
-		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit", new Sha1("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078"))));
+		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit", new Sha1("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078"), null)));
 	}
 
 }

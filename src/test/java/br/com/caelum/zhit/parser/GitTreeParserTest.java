@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import br.com.caelum.zhit.model.GitTree;
+import br.com.caelum.zhit.model.internal.EntryType;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
 import br.com.caelum.zhit.model.internal.Sha1;
 
@@ -19,10 +20,10 @@ public class GitTreeParserTest {
 		
 		
 		RawGitTreeEntry entry = tree.entries().get(0);
-		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("040000", "tree", new Sha1("8add0d07efc6ba027407c82740a001cfcbc7b772"))));
+		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("040000", EntryType.TREE, new Sha1("8add0d07efc6ba027407c82740a001cfcbc7b772"))));
 		
 		entry = tree.entries().get(1);
-		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("100644", "blob", new Sha1("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"))));
+		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("100644", EntryType.BLOB, new Sha1("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"))));
 		
 	}
 

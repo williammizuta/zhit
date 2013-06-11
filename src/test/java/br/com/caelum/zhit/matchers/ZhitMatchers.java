@@ -14,6 +14,7 @@ import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.model.GitTree;
+import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
 import br.com.caelum.zhit.model.internal.Sha1;
 
@@ -41,7 +42,8 @@ public class ZhitMatchers {
 				description.appendText(commit.toString());
 			}
 			protected boolean matchesSafely(GitCommit testingCommit) {
-				boolean sameTree = sameSha1(commit.tree()).matches(testingCommit.tree());
+				GitObject<GitTree> tree = commit.tree();
+				boolean sameTree = sameSha1(tree.sha1()).matches(testingCommit.tree().sha1());
 				boolean sameAuthor = sameAuthor(commit.author()).matches(testingCommit.author());
 				boolean sameMessage = commit.message().equals(testingCommit.message());
 

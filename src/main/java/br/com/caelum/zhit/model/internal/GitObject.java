@@ -10,24 +10,25 @@ import br.com.caelum.zhit.parser.GitObjectParser;
 
 public class GitObject<T> {
 
-	private final String sha1;
+	private final Sha1 sha1;
 	private final GitRepository gitRepository;
 
-	public GitObject(String sha1, GitRepository gitRepository) {
+	public GitObject(Sha1 sha1, GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
-		this.sha1 = sha1.trim();
+		this.sha1 = sha1;
 	}
 	
 	public T extract(GitObjectParser<T> factory) {
 		GitObjectInflater inflater = new GitObjectInflater();
 		File dotGit = gitRepository.dotGit();
+		String sha1 = this.sha1.hash().trim();
 		String dir = sha1.substring(0, 2);
 		String fileName = sha1.substring(2);
 		File objectFile = new File(dotGit, "objects" + separator + dir + separator + fileName);
 		return factory.parse(inflater.inflate(objectFile));
 	}
 
-	public String sha1() {
+	public Sha1 sha1() {
 		return sha1;
 	}
 	

@@ -31,11 +31,25 @@ public class GitRepository {
 		File head = new File(dotGit, "HEAD");
 		String headContent = ZhitFileUtils.readFileToString(head);
 		String headBranch = headContent.split(":")[1].trim();
-		String headHash = ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
+		String headHash = extractHeadHash(headBranch);
 		
 		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(new Sha1(headHash), this);
 		GitCommit commit = gitObject.extract(new GitCommitParser(this));
 		return commit;
+	}
+
+	private String extractHeadHash(String headBranch) {
+		String packedRefs = ZhitFileUtils.readFileToString(new File(dotGit, "packed-refs"));
+		String[] lines = packedRefs.split("\n");
+		for (String line : lines) {
+			if (line.contains(headBranch)) {
+				return line.split("\\s")[0];
+			}
+		}
+		if (new File(dotGit, headBranch).exists()) {
+			return ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
+		}
+		throw new IllegalArgumentException("could not find " + headBranch);
 	}
 	
 	public File path() {

@@ -7,12 +7,12 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class GitObjectInflaterTest {
+public class GitCommitInflaterTest {
 
 	@Test
 	public void should_inflate_a_commit_git_object() throws Exception {
 		File commitObject = new File("src/test/resources/sample-with-objects/objects/25/0f67ef017fcb97b5371a302526872cfcadad21");
-		String commitInformation = new GitObjectInflater().inflate(commitObject);
+		String commitInformation = new GitCommitInflater().inflate(commitObject);
 		assertThat(commitInformation, isAValidGitCommit());
 	}
 

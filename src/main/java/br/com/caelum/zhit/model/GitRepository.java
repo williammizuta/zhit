@@ -2,6 +2,7 @@ package br.com.caelum.zhit.model;
 
 import java.io.File;
 
+import br.com.caelum.zhit.infra.GitCommitInflater;
 import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
@@ -33,21 +34,25 @@ public class GitRepository {
 		String headBranch = headContent.split(":")[1].trim();
 		String headHash = extractHeadHash(headBranch);
 		
-		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(new Sha1(headHash), this);
+		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(new Sha1(headHash), this, new GitCommitInflater());
 		GitCommit commit = gitObject.extract(new GitCommitParser(this));
 		return commit;
 	}
 
 	private String extractHeadHash(String headBranch) {
-		String packedRefs = ZhitFileUtils.readFileToString(new File(dotGit, "packed-refs"));
-		String[] lines = packedRefs.split("\n");
-		for (String line : lines) {
-			if (line.contains(headBranch)) {
-				return line.split("\\s")[0];
+		File packedRefsFile = new File(dotGit, "packed-refs");
+		if(packedRefsFile.exists()) {
+			String packedRefs = ZhitFileUtils.readFileToString(packedRefsFile);
+			String[] lines = packedRefs.split("\n");
+			for (String line : lines) {
+				if (line.contains(headBranch)) {
+					return line.split("\\s")[0];
+				}
 			}
 		}
-		if (new File(dotGit, headBranch).exists()) {
-			return ZhitFileUtils.readFileToString(new File(dotGit, headBranch));
+		File headBranchFile = new File(dotGit, headBranch);
+		if (headBranchFile.exists()) {
+			return ZhitFileUtils.readFileToString(headBranchFile);
 		}
 		throw new IllegalArgumentException("could not find " + headBranch);
 	}

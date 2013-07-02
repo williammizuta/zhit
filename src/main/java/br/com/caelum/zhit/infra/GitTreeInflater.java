@@ -12,20 +12,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.io.IOUtils;
+
 public class GitTreeInflater implements GitObjectInflater {
 
 	private int bytesRead = 0;
-	private InflaterInputStream inflaterInputStream;
 
 	@Override
 	public String inflate(File file) {
 		try(InflaterInputStream inflaterInputStream = new InflaterInputStream(new FileInputStream(file))) {
-			this.inflaterInputStream = inflaterInputStream;
 			int treeSize = treeSize(inflaterInputStream);
 			byte[] treeBytes = new byte[treeSize];
-			int bytesToRead = inflaterInputStream.read(treeBytes);
+			IOUtils.readFully(inflaterInputStream, treeBytes);
 			StringBuilder builder = new StringBuilder();
-			while (bytesRead  < bytesToRead) {
+			while (bytesRead  < treeSize) {
 				String octalMode = readOctalMode(treeBytes);
 				CharBuffer fileName = readFileName(treeBytes);
 				String hashCode = readHashCode(treeBytes);
@@ -36,7 +36,7 @@ public class GitTreeInflater implements GitObjectInflater {
 					.append(typeOf(octalMode))
 					.append(" ")
 					.append(hashCode)
-					.append(" ")
+					.append("\t")
 					.append(fileName)
 					.append("\n");
 			}
@@ -66,10 +66,11 @@ public class GitTreeInflater implements GitObjectInflater {
 		return bytesToHex;
 	}
 
-	private CharBuffer readFileName(byte[] treeBytes)
-			throws CharacterCodingException {
+	private CharBuffer readFileName(byte[] treeBytes) throws CharacterCodingException {
 		int size = 0;
-		for (; treeBytes[bytesRead + size] != 0; size++) {}
+		while(treeBytes[bytesRead + size] != 0) {
+			size++;
+		}
 		byte[] fileNameArray = Arrays.copyOfRange(treeBytes, bytesRead, bytesRead + size);
 		bytesRead += size + 1;
 		return convertToUTF8(fileNameArray);

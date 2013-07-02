@@ -26,14 +26,18 @@ public class GitTreeInflater implements GitObjectInflater {
 			int bytesToRead = inflaterInputStream.read(treeBytes);
 			StringBuilder builder = new StringBuilder();
 			while (bytesRead  < bytesToRead) {
-				CharBuffer octalMode = readOctalMode(treeBytes);
+				String octalMode = readOctalMode(treeBytes);
 				CharBuffer fileName = readFileName(treeBytes);
 				String hashCode = readHashCode(treeBytes);
+				
 				builder
 					.append(octalMode)
-					.append(fileName)
+					.append(" ")
+					.append(typeOf(octalMode))
 					.append(" ")
 					.append(hashCode)
+					.append(" ")
+					.append(fileName)
 					.append("\n");
 			}
 			
@@ -42,6 +46,17 @@ public class GitTreeInflater implements GitObjectInflater {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private String typeOf(String octalMode) {
+		switch (octalMode) {
+		case "040000":
+			return "tree";
+		case "160000":
+			return "commit";
+		default:
+			return "blob";
+		} 
 	}
 
 	private String readHashCode(byte[] treeBytes) {
@@ -60,11 +75,13 @@ public class GitTreeInflater implements GitObjectInflater {
 		return convertToUTF8(fileNameArray);
 	}
 
-	private CharBuffer readOctalMode(byte[] treeBytes) throws IOException {
+	private String readOctalMode(byte[] treeBytes) throws IOException {
 		byte[] octalBuffer = Arrays.copyOfRange(treeBytes, bytesRead, bytesRead + 6);
 		bytesRead += 6;
-		CharBuffer octal = convertToUTF8(octalBuffer);
-		inflaterInputStream.read();
+		String octal = convertToUTF8(octalBuffer).toString();
+		if (octal.endsWith(" ")) {
+			return ("0" + octal.subSequence(0, octal.length() - 1));
+		}
 		return octal;
 	}
 

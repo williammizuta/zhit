@@ -86,7 +86,7 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	public void testName() throws Exception {
+	public void shouldParseBlobContents() throws Exception {
 		GitTree tree = repository.head().tree();
 		RawGitTreeEntry gitignore = tree.files().get(0);
 		
@@ -95,6 +95,12 @@ public class IntegrationTest {
 		assertThat(blob.content(), allOf(containsString("cobertura.ser"), 
 				containsString("out"), containsString("test.properties"), 
 				containsString("*.swp")));
+	}
+	
+	@Test
+	public void testName() throws Exception {
+		repository.head().parents();
+		
 	}
 	
 	

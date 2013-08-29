@@ -1,5 +1,7 @@
 package br.com.caelum.zhit.model;
 
+import java.util.List;
+
 import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
@@ -32,6 +34,10 @@ public class GitCommit {
 	@Deprecated
 	public GitObject<GitTree> treeObject() {
 		return tree;
+	}
+
+	public List<Sha1> parents() {
+		return null;
 	}
 
 }

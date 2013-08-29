@@ -20,10 +20,10 @@ public class GitTreeParserTest {
 		
 		
 		RawGitTreeEntry entry = tree.entries().get(0);
-		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("040000", EntryType.TREE, new Sha1("8add0d07efc6ba027407c82740a001cfcbc7b772"))));
+		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("040000", EntryType.TREE, new Sha1("8add0d07efc6ba027407c82740a001cfcbc7b772"), "dir")));
 		
 		entry = tree.entries().get(1);
-		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("100644", EntryType.BLOB, new Sha1("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"))));
+		assertThat(entry, sameRawGitTreeEntry(new RawGitTreeEntry("100644", EntryType.BLOB, new Sha1("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"), "file")));
 		
 	}
 

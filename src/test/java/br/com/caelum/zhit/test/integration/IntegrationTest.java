@@ -1,11 +1,18 @@
 package br.com.caelum.zhit.test.integration;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,8 +44,14 @@ public class IntegrationTest {
 		GitRepository repository = GitRepository.bare(new File(resources, "caelum-stella.git"));
 		GitCommit head = repository.head();
 		GitTree gitTree = head.tree().extract(new GitTreeParser());
+		
 		List<RawGitTreeEntry> files = gitTree.files();
-		System.out.println(files);
+		List<RawGitTreeEntry> dirs = gitTree.dirs();
+		
+		RawGitTreeEntry rawGitTreeEntry = files.get(0);
+		
+		assertThat(files, hasSize(8));
+		assertThat(dirs, hasSize(14));
 		
 	}
 	

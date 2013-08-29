@@ -2,11 +2,15 @@ package br.com.caelum.zhit.model;
 
 import java.io.File;
 
+import br.com.caelum.zhit.infra.GitBlobInflater;
 import br.com.caelum.zhit.infra.GitCommitInflater;
+import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
+import br.com.caelum.zhit.parser.GitBlobParser;
 import br.com.caelum.zhit.parser.GitCommitParser;
+import br.com.caelum.zhit.parser.GitTreeParser;
 
 public class GitRepository {
 
@@ -67,6 +71,15 @@ public class GitRepository {
 
 	public File dotGit() {
 		return dotGit;
+	}
+
+	public GitTree parseTree(Sha1 sha1) {
+		return new GitObject<GitTree>(sha1, this,
+				new GitTreeInflater()).extract(new GitTreeParser());
+	}
+
+	public GitBlob parseBlob(Sha1 sha1) {
+		return new GitObject<GitBlob>(sha1, this, new GitBlobInflater()).extract(new GitBlobParser());
 	}
 
 }

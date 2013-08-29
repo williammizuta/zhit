@@ -42,8 +42,8 @@ public class ZhitMatchers {
 				description.appendText(commit.toString());
 			}
 			protected boolean matchesSafely(GitCommit testingCommit) {
-				GitObject<GitTree> tree = commit.tree();
-				boolean sameTree = sameSha1(tree.sha1()).matches(testingCommit.tree().sha1());
+				GitObject<GitTree> tree = commit.treeObject();
+				boolean sameTree = sameSha1(tree.sha1()).matches(tree.sha1());
 				boolean sameAuthor = sameAuthor(commit.author()).matches(testingCommit.author());
 				boolean sameMessage = commit.message().equals(testingCommit.message());
 

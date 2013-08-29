@@ -3,6 +3,7 @@ package br.com.caelum.zhit.model;
 import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
+import br.com.caelum.zhit.parser.GitTreeParser;
 
 public class GitCommit {
 
@@ -20,12 +21,17 @@ public class GitCommit {
 		return message;
 	}
 
-	public GitObject<GitTree> tree() {
-		return tree;
+	public GitTree tree() {
+		return tree.extract(new GitTreeParser());
 	}
 
 	public Author author() {
 		return author;
+	}
+
+	@Deprecated
+	public GitObject<GitTree> treeObject() {
+		return tree;
 	}
 
 }

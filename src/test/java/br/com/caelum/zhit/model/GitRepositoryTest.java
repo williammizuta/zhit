@@ -9,8 +9,6 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.util.List;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import br.com.caelum.zhit.model.internal.Sha1;
@@ -25,7 +23,7 @@ public class GitRepositoryTest {
 	}
 	
 	@Test
-	public void should_list_all_local_branches() throws Exception {
+	public void should_list_all_local_branches() {
 		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-branches"));
 		List<GitBranch> branches = repository.branches();
 		

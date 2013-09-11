@@ -11,25 +11,24 @@ import static java.util.Collections.emptyList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import java.util.Set;
+import java.util.TreeSet;
 
 import br.com.caelum.zhit.infra.GitBlobInflater;
 import br.com.caelum.zhit.infra.GitCommitInflater;
 import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.infra.ZhitFileUtils;
-import br.com.caelum.zhit.matchers.ZhitMatchers;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
 import br.com.caelum.zhit.parser.GitBlobParser;
 import br.com.caelum.zhit.parser.GitCommitParser;
 import br.com.caelum.zhit.parser.GitTreeParser;
+
+import com.google.common.base.Function;
 
 public class GitRepository {
 
@@ -108,13 +107,32 @@ public class GitRepository {
 	}
 
 	public List<GitBranch> branches() {
+		Set<GitBranch> branches = new TreeSet<GitBranch>(branchComparator());
+		
+		File[] listFiles = new File(dotGit, "refs/heads").listFiles();
+		for (File file : listFiles) {
+			Sha1 sha1 = new Sha1(readFileToString(file).trim());
+			branches.add(new GitBranch(file.getName(), sha1));
+		}
+		
 		File packedRefsFile = new File(dotGit, "packed-refs");
 		List<String> packedRefsLines = packedRefsLines(packedRefsFile);
-		
 		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches());
 		Function<String, GitBranch> function = extractBranch(); 
+		branches.addAll(transform(linesWithBranches, function));
 		
-		return new ArrayList<GitBranch>(transform(linesWithBranches, function));  
+		return new ArrayList<>(branches);
+	}
+
+	private Comparator<GitBranch> branchComparator() {
+		return new Comparator<GitBranch>() {
+			@Override
+			public int compare(GitBranch b1, GitBranch b2) {
+				if (b1.name().equals(b2.name()))
+					return 0;
+				return 1;
+			}
+		};
 	}
 
 }

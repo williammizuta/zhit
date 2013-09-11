@@ -1,6 +1,8 @@
 package br.com.caelum.zhit.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.caelum.zhit.infra.GitBlobInflater;
 import br.com.caelum.zhit.infra.GitCommitInflater;
@@ -45,7 +47,7 @@ public class GitRepository {
 
 	private String extractHeadHash(String headBranch) {
 		File packedRefsFile = new File(dotGit, "packed-refs");
-		if(packedRefsFile.exists()) {
+		if (packedRefsFile.exists()) {
 			String packedRefs = ZhitFileUtils.readFileToString(packedRefsFile);
 			String[] lines = packedRefs.split("\n");
 			for (String line : lines) {
@@ -80,6 +82,27 @@ public class GitRepository {
 
 	public GitBlob parseBlob(Sha1 sha1) {
 		return new GitObject<GitBlob>(sha1, this, new GitBlobInflater()).extract(new GitBlobParser());
+	}
+
+	public List<GitBranch> branches() {
+		File packedRefsFile = new File(dotGit, "packed-refs");
+		List<GitBranch> branches = new ArrayList<>();
+		if (packedRefsFile.exists()) {
+			String packedRefs = ZhitFileUtils.readFileToString(packedRefsFile);
+			String[] lines = packedRefs.split("\n");
+			for (String line : lines) {
+				String[] fields = line.split("\\s");
+				if (fields.length > 1) { 
+					String sha1 = fields[0];
+					String name = fields[1];
+					if (name.startsWith("refs/heads/")) {
+						String simpleName = name.substring(name.lastIndexOf("/") + 1);
+						branches.add(new GitBranch(simpleName, new Sha1(sha1)));
+					}
+				}
+			}
+		}
+		return branches;
 	}
 
 }

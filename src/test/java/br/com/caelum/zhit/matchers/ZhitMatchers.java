@@ -11,6 +11,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import br.com.caelum.zhit.model.Author;
+import br.com.caelum.zhit.model.GitBranch;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.model.GitTree;
@@ -155,6 +156,22 @@ public class ZhitMatchers {
 				} catch (IOException e) {
 					return false;
 				}
+			}
+		};
+	}
+
+	@Factory
+	public static Matcher<GitBranch> sameBranch(final GitBranch expected) {
+		return new TypeSafeMatcher<GitBranch>() {
+			@Override
+			public void describeTo(Description desc) {
+				desc.appendText(expected.toString());
+			}
+
+			@Override
+			protected boolean matchesSafely(GitBranch original) {
+				return original.name().equals(expected.name()) && 
+						original.sha1().equals(expected.sha1());
 			}
 		};
 	}

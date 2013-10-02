@@ -1,6 +1,5 @@
 package br.com.caelum.zhit.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.caelum.zhit.infra.GitTreeInflater;

@@ -1,6 +1,7 @@
 package br.com.caelum.zhit.model;
 
 import static br.com.caelum.zhit.matchers.ZhitMatchers.sameBranch;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -24,6 +25,7 @@ public class GitRepositoryTest {
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void should_list_all_local_branches() {
 		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-branches"));
 		List<GitBranch> branches = repository.branches();
@@ -34,10 +36,11 @@ public class GitRepositoryTest {
 		GitBranch oldLocalbranch = new GitBranch("localbranch", new Sha1("fda4ec629684b949f241aeeb9f5ee6da4289c7b7 "));
 		
 		assertThat(branches, hasItems(sameBranch(master), sameBranch(comItau), sameBranch(localbranch)));
-		assertThat(branches, not(hasItems(sameBranch(oldLocalbranch))));
+		assertThat(branches, not(hasItem(sameBranch(oldLocalbranch))));
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void should_list_all_remote_branches() {
 		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-remote-branches"));
 		

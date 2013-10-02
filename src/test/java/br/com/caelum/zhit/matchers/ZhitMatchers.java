@@ -37,6 +37,7 @@ public class ZhitMatchers {
 	}
 
 	@Factory
+	@SuppressWarnings("deprecation")
 	public static Matcher<GitCommit> sameGitCommit(final GitCommit commit) {
 		return new TypeSafeMatcher<GitCommit>() {
 			public void describeTo(Description description) {

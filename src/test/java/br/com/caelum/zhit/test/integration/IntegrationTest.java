@@ -3,7 +3,7 @@ package br.com.caelum.zhit.test.integration;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,18 +16,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.matchers.ZhitMatchers;
 import br.com.caelum.zhit.model.GitBlob;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.model.GitTree;
 import br.com.caelum.zhit.model.internal.EntryType;
-import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
 import br.com.caelum.zhit.model.internal.Sha1;
-import br.com.caelum.zhit.parser.GitObjectParser;
-import br.com.caelum.zhit.parser.GitTreeParser;
 
 public class IntegrationTest {
 	

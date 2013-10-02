@@ -26,8 +26,6 @@ import br.com.caelum.zhit.parser.GitBlobParser;
 import br.com.caelum.zhit.parser.GitCommitParser;
 import br.com.caelum.zhit.parser.GitTreeParser;
 
-import com.google.common.base.Function;
-
 public class GitRepository {
 
 	private final File root;

@@ -6,14 +6,11 @@ import static br.com.caelum.zhit.model.ZhitPredicates.grep;
 import static br.com.caelum.zhit.model.ZhitPredicates.linesWithBranches;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,6 +20,7 @@ import br.com.caelum.zhit.infra.GitCommitInflater;
 import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.model.internal.GitObject;
+import br.com.caelum.zhit.model.internal.PackedRefs;
 import br.com.caelum.zhit.model.internal.Sha1;
 import br.com.caelum.zhit.parser.GitBlobParser;
 import br.com.caelum.zhit.parser.GitCommitParser;
@@ -35,6 +33,7 @@ public class GitRepository {
 	private final File root;
 	private final File dotGit;
 	private final boolean bare;
+	private final PackedRefs packedRefs;
 
 	public static GitRepository local(File repositoryRoot) {
 		return new GitRepository(repositoryRoot, false);
@@ -48,6 +47,7 @@ public class GitRepository {
 		this.bare = bare;
 		this.root = repositoryRoot;
 		this.dotGit = bare ? root : new File(root, ".git");
+		this.packedRefs = new PackedRefs(dotGit);
 	}
 
 	public GitCommit head() {
@@ -67,22 +67,14 @@ public class GitRepository {
 			return ZhitFileUtils.readFileToString(headBranchFile);
 		}
 		
-		File packedRefsFile = new File(dotGit, "packed-refs");
-		List<String> packedRefsLines = packedRefsLines(packedRefsFile);
+		List<String> packedRefsLines = packedRefs.packedRefsLines();
 		ArrayList<String> headLines = new ArrayList<String>(filter(packedRefsLines, grep(headBranch)));
-		if (headLines.isEmpty())
+		if (headLines.isEmpty()) {
 			throw new IllegalArgumentException("could not find " + headBranch);
+		}
 		
 		return headLines.get(0).split("\\s")[0];
 		
-	}
-
-	private List<String> packedRefsLines(File packedRefsFile) {
-		if (packedRefsFile.exists()) {
-			String packedRefs = readFileToString(packedRefsFile);
-			return asList(packedRefs.split("\n"));
-		}
-		return emptyList();
 	}
 	
 	public File path() {
@@ -98,8 +90,7 @@ public class GitRepository {
 	}
 
 	public GitTree parseTree(Sha1 sha1) {
-		return new GitObject<GitTree>(sha1, this,
-				new GitTreeInflater()).extract(new GitTreeParser());
+		return new GitObject<GitTree>(sha1, this, new GitTreeInflater()).extract(new GitTreeParser());
 	}
 
 	public GitBlob parseBlob(Sha1 sha1) {
@@ -115,15 +106,30 @@ public class GitRepository {
 			branches.add(new GitBranch(file.getName(), sha1));
 		}
 		
-		File packedRefsFile = new File(dotGit, "packed-refs");
-		List<String> packedRefsLines = packedRefsLines(packedRefsFile);
+		List<String> packedRefsLines = packedRefs.packedRefsLines();
 		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches());
-		Function<String, GitBranch> function = extractBranch(); 
-		branches.addAll(transform(linesWithBranches, function));
+		branches.addAll(transform(linesWithBranches, extractBranch()));
 		
 		return new ArrayList<>(branches);
 	}
 
+	public Collection<GitBranch> remoteBranches() {
+		File[] remotesDir = new File(dotGit, "refs/remotes").listFiles();
+		Collection<GitBranch> branches = new ArrayList<>();
+		for (File remote : remotesDir) {
+			File[] remoteBranches = remote.listFiles();
+			for (File branch : remoteBranches) {
+				String name = remote.getName() + "/" + branch.getName();
+				String sha = ZhitFileUtils.readFileToString(branch).trim();
+				branches.add(new GitBranch(name, new Sha1(sha)));
+			}
+		}
+		
+		branches.addAll(packedRefs.remotes());
+		
+		return branches;
+	}
+	
 	private Comparator<GitBranch> branchComparator() {
 		return new Comparator<GitBranch>() {
 			@Override
@@ -134,5 +140,6 @@ public class GitRepository {
 			}
 		};
 	}
+
 
 }

@@ -8,10 +8,10 @@ import static org.junit.Assert.assertThat;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.com.caelum.zhit.builder.AuthorBuilder;
-import br.com.caelum.zhit.matchers.ZhitMatchers;
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.internal.Sha1;

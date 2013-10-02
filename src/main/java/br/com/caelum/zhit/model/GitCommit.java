@@ -1,5 +1,6 @@
 package br.com.caelum.zhit.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.caelum.zhit.infra.GitTreeInflater;
@@ -12,10 +13,12 @@ public class GitCommit {
 	private final String message;
 	private final GitObject<GitTree> tree;
 	private final Author author;
+	private final List<Sha1> parents;
 
-	public GitCommit(Author author, String message, Sha1 tree, GitRepository gitRepository) {
+	public GitCommit(Author author, String message, Sha1 tree, List<Sha1> parents, GitRepository gitRepository) {
 		this.author = author;
 		this.message = message;
+		this.parents = parents;
 		this.tree = new GitObject<GitTree>(tree, gitRepository, new GitTreeInflater());
 	}
 
@@ -37,7 +40,7 @@ public class GitCommit {
 	}
 
 	public List<Sha1> parents() {
-		return null;
+		return parents;
 	}
 
 }

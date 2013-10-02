@@ -1,5 +1,7 @@
 package br.com.caelum.zhit.parser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import br.com.caelum.zhit.model.Author;
@@ -22,7 +24,8 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 		Author author = null;
 		String message = "";
 		String tree = "";
-		while(scanner.hasNext()) {
+		List<Sha1> parents = new ArrayList<>();
+		while (scanner.hasNext()) {
 			String  currentLine = scanner.nextLine();
 			if (currentLine.startsWith("author")) {
 				author = Author.fromString(currentLine);
@@ -30,12 +33,15 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 			if (currentLine.startsWith("tree")) {
 				tree = currentLine.split("tree ")[1];
 			}
+			if (currentLine.startsWith("parent")) {
+				parents.add(new Sha1(currentLine.split("\\s")[1].trim()));
+			}
 			if (currentLine.matches("\\s*")) {
 				message = scanner.useDelimiter("\\z").next().trim();
 			}
 		}
 		scanner.close();
-		return new GitCommit(author, message, new Sha1(tree), gitRepository);
+		return new GitCommit(author, message, new Sha1(tree), parents, gitRepository);
 	}
 
 }

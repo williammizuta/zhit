@@ -1,8 +1,7 @@
 package br.com.caelum.zhit.model.internal;
 
 import static br.com.caelum.zhit.infra.ZhitFileUtils.readFileToString;
-import static br.com.caelum.zhit.model.ZhitFunctions.extractLocalBranch;
-import static br.com.caelum.zhit.model.ZhitFunctions.extractRemoteBranch;
+import static br.com.caelum.zhit.model.ZhitFunctions.extractBranch;
 import static br.com.caelum.zhit.model.ZhitPredicates.grep;
 import static br.com.caelum.zhit.model.ZhitPredicates.linesWithBranches;
 import static com.google.common.collect.Collections2.filter;
@@ -33,12 +32,12 @@ public class PackedRefs {
 
 	public Collection<GitBranch> locals() {
 		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches("refs/heads/"));
-		return transform(linesWithBranches, extractLocalBranch());
+		return transform(linesWithBranches, extractBranch("/"));
 	}
 
 	public Collection<GitBranch> remotes() {
 		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches("refs/remotes/"));
-		return transform(linesWithBranches, extractRemoteBranch());
+		return transform(linesWithBranches, extractBranch("remotes/"));
 	}
 
 	public Sha1 sha1(String branch) {

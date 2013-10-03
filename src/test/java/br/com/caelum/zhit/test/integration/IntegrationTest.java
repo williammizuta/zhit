@@ -60,7 +60,6 @@ public class IntegrationTest {
 		assertThat(dirs, hasSize(14));
 		
 		RawGitTreeEntry expected = new RawGitTreeEntry("100644", EntryType.BLOB, new Sha1("2beae51a0e14b3167fd7e81119972caef95779f4"), ".gitignore");
-		
 		assertThat(files, Matchers.hasItem(ZhitMatchers.sameRawGitTreeEntry(expected)));
 	}
 	
@@ -96,10 +95,6 @@ public class IntegrationTest {
 	@Test
 	public void testName() throws Exception {
 		repository.head().parents();
-		
 	}
-	
-	
-	
 
 }

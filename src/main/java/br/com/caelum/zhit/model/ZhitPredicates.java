@@ -13,12 +13,12 @@ public class ZhitPredicates {
 		};
 	}
 
-	public static Predicate<String> linesWithBranches() {
+	public static Predicate<String> linesWithBranches(final String pattern) {
 		return new Predicate<String>() {
 			@Override
 			public boolean apply(String line) {
 				String[] fields = line.split("\\s"); 
-				return fields.length > 1 && fields[1].startsWith("refs/heads/");
+				return fields.length > 1 && fields[1].startsWith(pattern);
 			}
 		};
 	}

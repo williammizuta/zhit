@@ -1,14 +1,3 @@
 # pack-refs with: peeled 
 67377001ff76aed4e327deb489b4c3c43ca51519 refs/remotes/origin/sets
-af7424836884cdf85fec61ca3035529ffbb649b2 refs/tags/v1.1
-739198bc09acb470ba80497d1c4739fe4f2eb5c1 refs/tags/caelum-stella-2.0.1
-^32449dd2d1edb138a9dc4a214d68b901fc14cadc
-48a92f76286a8809044362e1c5bf544eecc33bc2 refs/tags/caelum-stella-2.0-beta1
-^6b9433420e05b1bb20cc259e2f42e98078eb9be4
-544dbd1769b5ad0b3f43776dbe09e29592540c06 refs/tags/caelum-stella-2.0
-^128c50118307a1e61442db49eaf66db0b24d9d99
-ebc00cc02fe9aab1257b23465a78e0465f4144f3 refs/heads/master
 b9181a66550ca8d8ae7eff31ca276b5f5dcb584f refs/heads/com-itau@536
-d793219787c1dbd20e44300200a4750f11ac2a38 refs/heads/com-itau
-fda4ec629684b949f241aeeb9f5ee6da4289c7b7 refs/heads/boleto-html-example
-fda4ec629684b949f241aeeb9f5ee6da4289c7b7 refs/heads/localbranch

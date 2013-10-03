@@ -1,11 +1,15 @@
 package br.com.caelum.zhit.model.internal;
 
 import static br.com.caelum.zhit.infra.ZhitFileUtils.readFileToString;
+import static br.com.caelum.zhit.model.ZhitFunctions.extractLocalBranch;
+import static br.com.caelum.zhit.model.ZhitFunctions.extractRemoteBranch;
+import static br.com.caelum.zhit.model.ZhitPredicates.linesWithBranches;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,29 +17,30 @@ import br.com.caelum.zhit.model.GitBranch;
 
 public class PackedRefs {
 
-	private File packedRefs;
+	private final List<String> packedRefsLines;
 
 	public PackedRefs(File file) {
-		this.packedRefs = new File(file, "packed-refs");
+		File packedRefs = new File(file, "packed-refs");
+		if (packedRefs.exists()) {
+			String content = readFileToString(packedRefs);
+			packedRefsLines = asList(content.split("\n"));
+		} else {
+			packedRefsLines = emptyList();
+		}
+	}
+
+	public Collection<GitBranch> locals() {
+		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches("refs/heads/"));
+		return transform(linesWithBranches, extractLocalBranch());
 	}
 
 	public Collection<GitBranch> remotes() {
-		List<String> packedRefsLines = packedRefsLines();
-		List<GitBranch> remotes = new ArrayList<>();
-		for(String line : packedRefsLines) {
-			String[] splittedLine = line.split(" ");
-			if (splittedLine.length > 1 && splittedLine[1].startsWith("refs/remotes")) {
-				remotes.add(new GitBranch(splittedLine[1].replace("refs/remotes/", ""), new Sha1(splittedLine[0])));
-			}
-		}
-		return remotes;
+		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches("refs/remotes/"));
+		return transform(linesWithBranches, extractRemoteBranch());
 	}
 
 	public List<String> packedRefsLines() {
-		if (packedRefs.exists()) {
-			String content = readFileToString(packedRefs);
-			return asList(content.split("\n"));
-		}
-		return emptyList();
+		return this.packedRefsLines;
 	}
+
 }

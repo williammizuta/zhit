@@ -1,11 +1,8 @@
 package br.com.caelum.zhit.model;
 
 import static br.com.caelum.zhit.infra.ZhitFileUtils.readFileToString;
-import static br.com.caelum.zhit.model.ZhitFunctions.extractBranch;
 import static br.com.caelum.zhit.model.ZhitPredicates.grep;
-import static br.com.caelum.zhit.model.ZhitPredicates.linesWithBranches;
 import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +69,6 @@ public class GitRepository {
 		}
 		
 		return headLines.get(0).split("\\s")[0];
-		
 	}
 	
 	public File path() {
@@ -104,10 +100,7 @@ public class GitRepository {
 			branches.add(new GitBranch(file.getName(), sha1));
 		}
 		
-		List<String> packedRefsLines = packedRefs.packedRefsLines();
-		Collection<String> linesWithBranches = filter(packedRefsLines, linesWithBranches());
-		branches.addAll(transform(linesWithBranches, extractBranch()));
-		
+		branches.addAll(packedRefs.locals());
 		return new ArrayList<>(branches);
 	}
 
@@ -124,7 +117,6 @@ public class GitRepository {
 		}
 		
 		branches.addAll(packedRefs.remotes());
-		
 		return branches;
 	}
 	
@@ -138,6 +130,5 @@ public class GitRepository {
 			}
 		};
 	}
-
 
 }

@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +24,6 @@ import br.com.caelum.zhit.model.GitHistory;
 import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.model.GitTree;
 import br.com.caelum.zhit.model.internal.EntryType;
-import br.com.caelum.zhit.model.internal.GitCommitIterator;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
 import br.com.caelum.zhit.model.internal.Sha1;
 

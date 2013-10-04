@@ -23,15 +23,20 @@ public class GitCommitIterator implements Iterator<GitCommit> {
 
 	@Override
 	public boolean hasNext() {
-		return currentCommit != null && !currentCommit.parents().isEmpty();
+		return currentCommit != null;
 	}
 
 	@Override
 	public GitCommit next() {
-		Sha1 sha1 = currentCommit.parents().get(0);
-		currentCommit = new GitObject<GitCommit>(sha1, repository, inflater)
-				.extract(parser);
-		return currentCommit;
+		GitCommit current = currentCommit;
+		if (currentCommit.hasParents()) {
+			Sha1 sha1 = currentCommit.parents().get(0);
+			currentCommit = new GitObject<GitCommit>(sha1, repository, inflater)
+					.extract(parser);
+		} else {
+			currentCommit = null;
+		}
+		return current;
 	}
 
 	@Override

@@ -53,7 +53,9 @@ public class GitCommit {
 		return "GitCommit [message=" + message + ", tree=" + tree + ", author="
 				+ author + ", parents=" + parents + "]";
 	}
-	
-	
+
+	public boolean hasParents() {
+		return !parents.isEmpty();
+	}
 
 }

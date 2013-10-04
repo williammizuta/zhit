@@ -97,6 +97,7 @@ public class IntegrationTest {
 	@Test
 	public void should_iterate_over_history() throws Exception {
 		GitHistory history = repository.history();
+		
 		assertNotNull(history);
 		for (GitCommit commit : history) {
 			assertNotNull(commit);

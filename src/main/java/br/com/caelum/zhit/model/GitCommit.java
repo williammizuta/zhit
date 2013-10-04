@@ -59,7 +59,7 @@ public class GitCommit {
 	public DateTime createdAt() {
 		return createdAt;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "GitCommit [message=" + message + ", tree=" + tree + ", author="

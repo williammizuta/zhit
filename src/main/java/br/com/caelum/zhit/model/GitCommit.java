@@ -13,11 +13,13 @@ public class GitCommit {
 	private final GitObject<GitTree> tree;
 	private final Author author;
 	private final List<Sha1> parents;
+	private GitRepository repository;
 
 	public GitCommit(Author author, String message, Sha1 tree, List<Sha1> parents, GitRepository gitRepository) {
 		this.author = author;
 		this.message = message;
 		this.parents = parents;
+		this.repository = gitRepository;
 		this.tree = new GitObject<GitTree>(tree, gitRepository, new GitTreeInflater());
 	}
 
@@ -36,6 +38,10 @@ public class GitCommit {
 	@Deprecated
 	public GitObject<GitTree> treeObject() {
 		return tree;
+	}
+	
+	public GitRepository repository() {
+		return repository;
 	}
 
 	public List<Sha1> parents() {

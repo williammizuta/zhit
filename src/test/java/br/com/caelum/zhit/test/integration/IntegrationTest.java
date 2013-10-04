@@ -3,6 +3,7 @@ package br.com.caelum.zhit.test.integration;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,9 +21,11 @@ import org.junit.Test;
 import br.com.caelum.zhit.matchers.ZhitMatchers;
 import br.com.caelum.zhit.model.GitBlob;
 import br.com.caelum.zhit.model.GitCommit;
+import br.com.caelum.zhit.model.GitHistory;
 import br.com.caelum.zhit.model.GitRepository;
 import br.com.caelum.zhit.model.GitTree;
 import br.com.caelum.zhit.model.internal.EntryType;
+import br.com.caelum.zhit.model.internal.GitCommitIterator;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
 import br.com.caelum.zhit.model.internal.Sha1;
 
@@ -93,8 +97,13 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	public void testName() throws Exception {
-		repository.head().parents();
+	public void should_iterate_over_history() throws Exception {
+		GitHistory history = repository.history();
+		assertNotNull(history);
+		for (GitCommit commit : history) {
+			assertNotNull(commit);
+		}
+		
 	}
 
 }

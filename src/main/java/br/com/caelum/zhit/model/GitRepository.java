@@ -123,4 +123,8 @@ public class GitRepository {
 		};
 	}
 
+	public GitHistory history() {
+		return new GitHistory(head());
+	}
+	
 }

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Collections;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import br.com.caelum.zhit.builder.AuthorBuilder;
@@ -28,9 +29,9 @@ public class GitCommitParserTest {
 
 		Author author = new AuthorBuilder().withName("Francisco Sokol").withEmail("chico.sokol@gmail.com").create();
 		Sha1 tree = new Sha1("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078");
-		
+
 		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit", 
-				tree, Collections.<Sha1>emptyList(), null)));
+				tree, Collections.<Sha1>emptyList(), null, new DateTime(1369140112))));
 	}
 	
 	@Test
@@ -44,9 +45,9 @@ public class GitCommitParserTest {
 				"\n" +
 				"first commit\n";
 		GitCommit commit = new GitCommitParser(null).parse(objectContent);
-		
+
 		List<Sha1> parents = commit.parents();
-		
+
 		Sha1 firstParent = new Sha1("8999463ab4ada363f106a62754807a8ac61c2814");
 		Sha1 secondParent = new Sha1("ebf0f932c65de56ae11736646ddafc23529a6399");
 		assertThat(parents, containsInAnyOrder(sameSha1(firstParent), sameSha1(secondParent)));

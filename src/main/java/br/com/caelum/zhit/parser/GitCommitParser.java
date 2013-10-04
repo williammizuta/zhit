@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.joda.time.DateTime;
+
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
@@ -24,11 +26,13 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 		Author author = null;
 		String message = "";
 		String tree = "";
+		DateTime createdAt = null;
 		List<Sha1> parents = new ArrayList<>();
 		while (scanner.hasNext()) {
 			String  currentLine = scanner.nextLine();
 			if (currentLine.startsWith("author")) {
 				author = Author.fromString(currentLine);
+				createdAt = parseDate(currentLine);
 			}
 			if (currentLine.startsWith("tree")) {
 				tree = currentLine.split("tree ")[1];
@@ -41,7 +45,13 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 			}
 		}
 		scanner.close();
-		return new GitCommit(author, message, new Sha1(tree), parents, gitRepository);
+		return new GitCommit(author, message, new Sha1(tree), parents, gitRepository, createdAt);
+	}
+
+	private DateTime parseDate(String currentLine) {
+		String[] splitedLine = currentLine.split("\\s");
+		String timestamp = splitedLine[splitedLine.length-2];
+		return new DateTime(Long.parseLong(timestamp));
 	}
 
 }

@@ -48,8 +48,8 @@ public class ZhitMatchers {
 				boolean sameTree = sameSha1(tree.sha1()).matches(tree.sha1());
 				boolean sameAuthor = sameAuthor(commit.author()).matches(testingCommit.author());
 				boolean sameMessage = commit.message().equals(testingCommit.message());
-
-				return sameTree && sameAuthor && sameMessage;
+				boolean sameCreatedAt = commit.createdAt().equals(testingCommit.createdAt());
+				return sameTree && sameAuthor && sameMessage && sameCreatedAt;
 			}
 		};
 	}

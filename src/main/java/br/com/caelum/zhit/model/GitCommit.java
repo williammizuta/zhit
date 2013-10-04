@@ -2,6 +2,8 @@ package br.com.caelum.zhit.model;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import br.com.caelum.zhit.infra.GitTreeInflater;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.Sha1;
@@ -13,13 +15,15 @@ public class GitCommit {
 	private final GitObject<GitTree> tree;
 	private final Author author;
 	private final List<Sha1> parents;
-	private GitRepository repository;
+	private final GitRepository repository;
+	private final DateTime createdAt;
 
-	public GitCommit(Author author, String message, Sha1 tree, List<Sha1> parents, GitRepository gitRepository) {
+	public GitCommit(Author author, String message, Sha1 tree, List<Sha1> parents, GitRepository gitRepository, DateTime createdAt) {
 		this.author = author;
 		this.message = message;
 		this.parents = parents;
 		this.repository = gitRepository;
+		this.createdAt = createdAt;
 		this.tree = new GitObject<GitTree>(tree, gitRepository, new GitTreeInflater());
 	}
 
@@ -48,14 +52,18 @@ public class GitCommit {
 		return parents;
 	}
 
+	public boolean hasParents() {
+		return !parents.isEmpty();
+	}
+
+	public DateTime createdAt() {
+		return createdAt;
+	}
+
 	@Override
 	public String toString() {
 		return "GitCommit [message=" + message + ", tree=" + tree + ", author="
-				+ author + ", parents=" + parents + "]";
-	}
-
-	public boolean hasParents() {
-		return !parents.isEmpty();
+				+ author + ", parents=" + parents + ", createdAt=" + createdAt + "]";
 	}
 
 }

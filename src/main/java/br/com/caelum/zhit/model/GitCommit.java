@@ -48,4 +48,12 @@ public class GitCommit {
 		return parents;
 	}
 
+	@Override
+	public String toString() {
+		return "GitCommit [message=" + message + ", tree=" + tree + ", author="
+				+ author + ", parents=" + parents + "]";
+	}
+	
+	
+
 }

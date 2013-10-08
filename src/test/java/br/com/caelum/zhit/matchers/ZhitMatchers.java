@@ -53,7 +53,7 @@ public class ZhitMatchers {
 			}
 		};
 	}
-	
+
 	@Factory
 	public static Matcher<GitTree> sameGitTree(final GitTree tree) {
 		return new TypeSafeMatcher<GitTree>() {
@@ -72,7 +72,7 @@ public class ZhitMatchers {
 			}
 		};
 	}
-	
+
 	@Factory
 	public static Matcher<Sha1> sameSha1(final Sha1 sha1) {
 		return new TypeSafeMatcher<Sha1>() {
@@ -84,7 +84,7 @@ public class ZhitMatchers {
 			}
 		};
 	}
-	
+
 	@Factory
 	public static Matcher<RawGitTreeEntry> sameRawGitTreeEntry(final RawGitTreeEntry entry) {
 		return new TypeSafeMatcher<RawGitTreeEntry>() {
@@ -92,10 +92,9 @@ public class ZhitMatchers {
 				description.appendText(entry.toString());
 			}
 			protected boolean matchesSafely(RawGitTreeEntry testingEntry) {
-				boolean sameSha1 = testingEntry.sha1().equals(entry.sha1());
 				boolean samePermissions = testingEntry.permissions().equals(entry.permissions());
 				boolean sameType = testingEntry.type().equals(entry.type());
-				return sameSha1 && samePermissions && sameType;
+				return sameSha1(testingEntry.sha1()).matches(entry.sha1()) && samePermissions && sameType;
 			}
 		};
 	}
@@ -168,11 +167,9 @@ public class ZhitMatchers {
 			public void describeTo(Description desc) {
 				desc.appendText(expected.toString());
 			}
-
 			@Override
 			protected boolean matchesSafely(GitBranch original) {
-				return original.name().equals(expected.name()) && 
-						original.sha1().equals(expected.sha1());
+				return original.name().equals(expected.name()) && sameSha1(original.sha1()).matches(expected.sha1());
 			}
 		};
 	}

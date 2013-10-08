@@ -12,14 +12,14 @@ public class GitObject<T> {
 
 	private final Sha1 sha1;
 	private final GitRepository gitRepository;
-	private GitObjectInflater inflater;
+	private final GitObjectInflater inflater;
 
 	public GitObject(Sha1 sha1, GitRepository gitRepository, GitObjectInflater inflater) {
 		this.gitRepository = gitRepository;
 		this.sha1 = sha1;
 		this.inflater = inflater;
 	}
-	
+
 	public T extract(GitObjectParser<T> parser) {
 		File dotGit = gitRepository.dotGit();
 		String sha1 = this.sha1.hash().trim();
@@ -32,5 +32,5 @@ public class GitObject<T> {
 	public Sha1 sha1() {
 		return sha1;
 	}
-	
+
 }

@@ -21,7 +21,7 @@ import br.com.caelum.zhit.parser.GitBlobParser;
 import br.com.caelum.zhit.parser.GitCommitParser;
 import br.com.caelum.zhit.parser.GitTreeParser;
 
-public class GitRepository {
+public final class GitRepository {
 
 	private final File root;
 	private final File dotGit;
@@ -31,11 +31,11 @@ public class GitRepository {
 	public static GitRepository local(File repositoryRoot) {
 		return new GitRepository(repositoryRoot, false);
 	}
-	
+
 	public static GitRepository bare(File repositoryRoot) {
 		return new GitRepository(repositoryRoot, true);
 	}
-	
+
 	private GitRepository(File repositoryRoot, boolean bare) {
 		this.bare = bare;
 		this.root = repositoryRoot;
@@ -45,24 +45,14 @@ public class GitRepository {
 
 	public GitCommit head() {
 		File head = new File(dotGit, "HEAD");
-		String headContent = ZhitFileUtils.readFileToString(head);
+		String headContent = readFileToString(head);
 		String headBranch = headContent.split(":")[1].trim();
 		Sha1 headHash = extractHeadHash(headBranch);
-		
-		GitObject<GitCommit> gitObject = new GitObject<GitCommit>(headHash, this, new GitCommitInflater());
-		GitCommit commit = gitObject.extract(new GitCommitParser(this));
-		return commit;
+
+		GitObject<GitCommit> gitObject = new GitObject<>(headHash, this, new GitCommitInflater());
+		return gitObject.extract(new GitCommitParser(this));
 	}
 
-	private Sha1 extractHeadHash(final String headBranch) {
-		File headBranchFile = new File(dotGit, headBranch);
-		if (headBranchFile.exists()) {
-			return new Sha1(ZhitFileUtils.readFileToString(headBranchFile));
-		}
-		
-		return packedRefs.sha1(headBranch);
-	}
-	
 	public File path() {
 		return root.getAbsoluteFile();
 	}
@@ -85,13 +75,13 @@ public class GitRepository {
 
 	public List<GitBranch> branches() {
 		Set<GitBranch> branches = new TreeSet<GitBranch>(branchComparator());
-		
+
 		File[] listFiles = new File(dotGit, "refs/heads").listFiles();
 		for (File file : listFiles) {
 			Sha1 sha1 = new Sha1(readFileToString(file).trim());
 			branches.add(new GitBranch(file.getName(), sha1));
 		}
-		
+
 		branches.addAll(packedRefs.locals());
 		return new ArrayList<>(branches);
 	}
@@ -107,11 +97,15 @@ public class GitRepository {
 				branches.add(new GitBranch(name, new Sha1(sha)));
 			}
 		}
-		
+
 		branches.addAll(packedRefs.remotes());
 		return branches;
 	}
-	
+
+	public GitHistory history() {
+		return new GitHistory(head());
+	}
+
 	private Comparator<GitBranch> branchComparator() {
 		return new Comparator<GitBranch>() {
 			@Override
@@ -123,8 +117,12 @@ public class GitRepository {
 		};
 	}
 
-	public GitHistory history() {
-		return new GitHistory(head());
+	private Sha1 extractHeadHash(final String headBranch) {
+		File headBranchFile = new File(dotGit, headBranch);
+		if (headBranchFile.exists()) {
+			return new Sha1(readFileToString(headBranchFile));
+		}
+		return packedRefs.sha1(headBranch);
 	}
-	
+
 }

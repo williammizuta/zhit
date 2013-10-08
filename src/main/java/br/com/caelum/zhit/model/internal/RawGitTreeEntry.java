@@ -1,11 +1,13 @@
 package br.com.caelum.zhit.model.internal;
 
+import static br.com.caelum.zhit.model.internal.EntryType.valueOf;
+
 public class RawGitTreeEntry {
-	
+
 	private final String permissions;
 	private final Sha1 sha1;
 	private final EntryType type;
-	private String filename;
+	private final String filename;
 
 	public RawGitTreeEntry(String permissions, EntryType type, Sha1 sha1, String filename) {
 		this.permissions = permissions;
@@ -20,7 +22,7 @@ public class RawGitTreeEntry {
 			throw new IllegalArgumentException();
 		}
 		String permissions = fields[0];
-		EntryType type = EntryType.valueOf(fields[1].toUpperCase());
+		EntryType type = valueOf(fields[1].toUpperCase());
 		Sha1 sha1 = new Sha1(fields[2]);
 		String filename = fields[3];
 		return new RawGitTreeEntry(permissions, type, sha1, filename);
@@ -38,14 +40,13 @@ public class RawGitTreeEntry {
 		return sha1;
 	}
 
-	@Override
-	public String toString() {
-		return "RawGitTreeEntry [permissions=" + permissions + ", sha1=" + sha1
-				+ ", type=" + type +  ", filename=" + filename + "]";
-	}
-	
 	public String filename() {
 		return filename;
+	}
+
+	@Override
+	public String toString() {
+		return "RawGitTreeEntry [permissions=" + permissions + ", sha1=" + sha1 + ", type=" + type +  ", filename=" + filename + "]";
 	}
 
 }

@@ -10,7 +10,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,12 +40,12 @@ public class PackedRefs {
 	}
 
 	public Sha1 sha1(String branch) {
-		ArrayList<String> headLines = new ArrayList<String>(filter(packedRefsLines, grep(branch)));
+		Collection<String> headLines = filter(packedRefsLines, grep(branch));
 		if (headLines.isEmpty()) {
 			throw new IllegalArgumentException("could not find " + branch);
 		}
 
-		return new Sha1(headLines.get(0).split("\\s")[0]);
+		return new Sha1(headLines.iterator().next().split("\\s")[0]);
 	}
 
 }

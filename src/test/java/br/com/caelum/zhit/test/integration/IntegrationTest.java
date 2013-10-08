@@ -1,7 +1,9 @@
 package br.com.caelum.zhit.test.integration;
 
+import static br.com.caelum.zhit.matchers.ZhitMatchers.sameRawGitTreeEntry;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -76,7 +78,7 @@ public class IntegrationTest {
 		assertThat(tree.files(), hasSize(0));
 
 		RawGitTreeEntry expected = new RawGitTreeEntry("040000", EntryType.TREE, new Sha1("1e409c824686f490dcbd7838adb675915bbd72b3"), "core-example");
-		assertThat(tree.dirs(), Matchers.hasItem(ZhitMatchers.sameRawGitTreeEntry(expected)));
+		assertThat(tree.dirs(), hasItem(sameRawGitTreeEntry(expected)));
 	}
 
 	@Test

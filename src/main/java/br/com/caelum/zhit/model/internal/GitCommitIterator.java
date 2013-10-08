@@ -2,7 +2,6 @@ package br.com.caelum.zhit.model.internal;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeSet;
 
 import br.com.caelum.zhit.infra.GitCommitInflater;
@@ -12,10 +11,10 @@ import br.com.caelum.zhit.parser.GitCommitParser;
 
 public class GitCommitIterator implements Iterator<GitCommit> {
 
-	private TreeSet<GitCommit> currentCommits = new TreeSet<>(comparator());
-	private GitCommitInflater inflater;
-	private GitCommitParser parser;
-	private GitRepository repository;
+	private final TreeSet<GitCommit> currentCommits = new TreeSet<>(comparator());
+	private final GitCommitInflater inflater;
+	private final GitCommitParser parser;
+	private final GitRepository repository;
 
 	public GitCommitIterator(GitCommit commit) {
 		inflater = new GitCommitInflater();
@@ -32,12 +31,9 @@ public class GitCommitIterator implements Iterator<GitCommit> {
 	@Override
 	public GitCommit next() {
 		GitCommit current = currentCommits.pollFirst();
-		if (current.hasParents()) {
-			List<Sha1> parents = current.parents();
-			for (Sha1 parent : parents) {
-				GitCommit commit = new GitObject<GitCommit>(parent, repository, inflater).extract(parser);
-				currentCommits.add(commit);
-			}
+		for (Sha1 parent : current.parents()) {
+			GitCommit commit = new GitObject<GitCommit>(parent, repository, inflater).extract(parser);
+			currentCommits.add(commit);
 		}
 		return current;
 	}
@@ -46,7 +42,7 @@ public class GitCommitIterator implements Iterator<GitCommit> {
 	public void remove() {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
-	
+
 	private Comparator<GitCommit> comparator() {
 		return new Comparator<GitCommit>() {
 			@Override
@@ -55,5 +51,5 @@ public class GitCommitIterator implements Iterator<GitCommit> {
 			}
 		};
 	}
-	
+
 }

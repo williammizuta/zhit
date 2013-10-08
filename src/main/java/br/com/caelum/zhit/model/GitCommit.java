@@ -43,7 +43,7 @@ public class GitCommit {
 	public GitObject<GitTree> treeObject() {
 		return tree;
 	}
-	
+
 	public GitRepository repository() {
 		return repository;
 	}
@@ -52,14 +52,10 @@ public class GitCommit {
 		return parents;
 	}
 
-	public boolean hasParents() {
-		return !parents.isEmpty();
-	}
-
 	public DateTime createdAt() {
 		return createdAt;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "GitCommit [message=" + message + ", tree=" + tree + ", author="

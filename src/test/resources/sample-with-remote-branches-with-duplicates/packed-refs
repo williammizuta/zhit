@@ -1,0 +1,4 @@
+# pack-refs with: peeled 
+af7424836884cdf85fec61ca3035529ffbb649b2 refs/remotes/another-remote/another-remote-branch
+0f67785c2e606c2cfa5b7c3d470404a5fe45094a refs/remotes/origin/old-remote-branch
+

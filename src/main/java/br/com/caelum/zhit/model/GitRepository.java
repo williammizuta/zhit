@@ -13,7 +13,6 @@ import java.util.TreeSet;
 import br.com.caelum.zhit.infra.GitBlobInflater;
 import br.com.caelum.zhit.infra.GitCommitInflater;
 import br.com.caelum.zhit.infra.GitTreeInflater;
-import br.com.caelum.zhit.infra.ZhitFileUtils;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.PackedRefs;
 import br.com.caelum.zhit.model.internal.Sha1;
@@ -73,13 +72,12 @@ public final class GitRepository {
 		return new GitObject<GitBlob>(sha1, this, new GitBlobInflater()).extract(new GitBlobParser());
 	}
 
-	public List<GitBranch> branches() {
+	public List<GitBranch> localBranches() {
 		Set<GitBranch> branches = new TreeSet<GitBranch>(branchComparator());
 
 		File[] listFiles = new File(dotGit, "refs/heads").listFiles();
-		for (File file : listFiles) {
-			Sha1 sha1 = new Sha1(readFileToString(file).trim());
-			branches.add(new GitBranch(file.getName(), sha1));
+		for (File branch : listFiles) {
+			addBranch(branches, branch);
 		}
 
 		branches.addAll(packedRefs.locals());
@@ -88,13 +86,12 @@ public final class GitRepository {
 
 	public Collection<GitBranch> remoteBranches() {
 		File[] remotesDir = new File(dotGit, "refs/remotes").listFiles();
-		Collection<GitBranch> branches = new ArrayList<>();
+		Collection<GitBranch> branches = new TreeSet<>(branchComparator());
+
 		for (File remote : remotesDir) {
 			File[] remoteBranches = remote.listFiles();
 			for (File branch : remoteBranches) {
-				String name = remote.getName() + "/" + branch.getName();
-				String sha = ZhitFileUtils.readFileToString(branch).trim();
-				branches.add(new GitBranch(name, new Sha1(sha)));
+				addBranch(branches, remote.getName() + "/", branch);
 			}
 		}
 
@@ -106,13 +103,21 @@ public final class GitRepository {
 		return new GitHistory(head());
 	}
 
+	private void addBranch(Collection<GitBranch> branches, String remote, File branch) {
+		String name = remote + branch.getName();
+		String sha = readFileToString(branch).trim();
+		branches.add(new GitBranch(name, new Sha1(sha)));
+	}
+	
+	private void addBranch(Collection<GitBranch> branches, File branch) {
+		addBranch(branches, "", branch);
+	}
+	
 	private Comparator<GitBranch> branchComparator() {
 		return new Comparator<GitBranch>() {
 			@Override
 			public int compare(GitBranch b1, GitBranch b2) {
-				if (b1.name().equals(b2.name()))
-					return 0;
-				return 1;
+				return (b1.name().compareTo(b2.name()));			
 			}
 		};
 	}
@@ -124,5 +129,4 @@ public final class GitRepository {
 		}
 		return packedRefs.sha1(headBranch);
 	}
-
 }

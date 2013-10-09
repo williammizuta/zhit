@@ -28,7 +28,7 @@ public class GitRepositoryTest {
 	@SuppressWarnings("unchecked")
 	public void should_list_all_local_branches() {
 		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-branches"));
-		List<GitBranch> branches = repository.branches();
+		List<GitBranch> branches = repository.localBranches();
 		
 		GitBranch master = new GitBranch("master", new Sha1("ebc00cc02fe9aab1257b23465a78e0465f4144f3"));
 		GitBranch comItau = new GitBranch("com-itau", new Sha1("d793219787c1dbd20e44300200a4750f11ac2a38"));
@@ -51,5 +51,20 @@ public class GitRepositoryTest {
 		
 		assertThat(branches, hasItems(sameBranch(remoteBranch), sameBranch(anotherRemoteBranch)));
 	}
-
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void should_list_all_remote_branches_without_duplicates() {
+		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-remote-branches-with-duplicates"));
+		
+		Collection<GitBranch> branches = repository.remoteBranches();
+		
+		GitBranch remoteBranch = new GitBranch("origin/remote-test", new Sha1("d793219787c1dbd20e44300200a4750f11ac2a38"));
+		GitBranch anotherRemoteBranch = new GitBranch("another-remote/another-remote-branch", new Sha1("af7424836884cdf85fec61ca3035529ffbb649b2"));
+		GitBranch oldRemoteBranch = new GitBranch("origin/old-remote-branch", new Sha1("8fbf85fc90ec4bdbce2b25590e261bff07083ec9"));
+		GitBranch packedRefsRemoteBranch = new GitBranch("origin/old-remote-branch", new Sha1("0f67785c2e606c2cfa5b7c3d470404a5fe45094a"));
+		
+		assertThat(branches, hasItems(sameBranch(remoteBranch), sameBranch(anotherRemoteBranch), sameBranch(oldRemoteBranch)));
+		assertThat(branches, not(hasItem(sameBranch(packedRefsRemoteBranch))));
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitCommit;
@@ -51,7 +52,11 @@ public class GitCommitParser implements GitObjectParser<GitCommit> {
 	private DateTime parseDate(String currentLine) {
 		String[] splitedLine = currentLine.split("\\s");
 		String timestamp = splitedLine[splitedLine.length-2];
-		return new DateTime(Long.parseLong(timestamp));
+		
+		String timezoneOffset = splitedLine[splitedLine.length-1];
+		int hours = Integer.parseInt(timezoneOffset.substring(0 ,timezoneOffset.length()-2));
+		int minutes = Integer.parseInt(timezoneOffset.substring(timezoneOffset.length()-2));
+		
+		return new DateTime(Long.parseLong(timestamp), DateTimeZone.forOffsetHoursMinutes(hours, minutes));
 	}
-
 }

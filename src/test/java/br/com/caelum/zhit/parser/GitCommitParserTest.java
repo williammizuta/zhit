@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import br.com.caelum.zhit.builder.AuthorBuilder;
@@ -31,7 +32,7 @@ public class GitCommitParserTest {
 		Sha1 tree = new Sha1("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078");
 
 		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit", 
-				tree, Collections.<Sha1>emptyList(), null, new DateTime(1369140112))));
+				tree, Collections.<Sha1>emptyList(), null, new DateTime(1369140112, DateTimeZone.forOffsetHoursMinutes(-3, 0)))));
 	}
 	
 	@Test

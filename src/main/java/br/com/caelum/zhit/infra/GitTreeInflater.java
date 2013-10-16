@@ -20,7 +20,8 @@ public class GitTreeInflater implements GitObjectInflater {
 
 	@Override
 	public String inflate(File file) {
-		try(InflaterInputStream inflaterInputStream = new InflaterInputStream(new FileInputStream(file))) {
+		bytesRead = 0;
+		try (InflaterInputStream inflaterInputStream = new InflaterInputStream(new FileInputStream(file))) {
 			int treeSize = treeSize(inflaterInputStream);
 			byte[] treeBytes = new byte[treeSize];
 			IOUtils.readFully(inflaterInputStream, treeBytes);

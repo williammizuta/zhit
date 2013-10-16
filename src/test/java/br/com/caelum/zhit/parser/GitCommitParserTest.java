@@ -3,13 +3,13 @@ package br.com.caelum.zhit.parser;
 import static br.com.caelum.zhit.matchers.ZhitMatchers.sameGitCommit;
 import static br.com.caelum.zhit.matchers.ZhitMatchers.sameSha1;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.joda.time.DateTimeZone.forOffsetHoursMinutes;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import br.com.caelum.zhit.builder.AuthorBuilder;
@@ -31,10 +31,10 @@ public class GitCommitParserTest {
 		Author author = new AuthorBuilder().withName("Francisco Sokol").withEmail("chico.sokol@gmail.com").create();
 		Sha1 tree = new Sha1("df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078");
 
-		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit", 
-				tree, Collections.<Sha1>emptyList(), null, new DateTime(1369140112, DateTimeZone.forOffsetHoursMinutes(-3, 0)))));
+		assertThat(commit, sameGitCommit(new GitCommit(author, "first commit",
+				tree, Collections.<Sha1>emptyList(), null, new DateTime(1369140112, forOffsetHoursMinutes(-3, 0)))));
 	}
-	
+
 	@Test
 	@SuppressWarnings("unchecked")
 	public void should_get_commit_parents() {

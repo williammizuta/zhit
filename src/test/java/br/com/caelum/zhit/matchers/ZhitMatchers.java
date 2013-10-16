@@ -14,6 +14,7 @@ import br.com.caelum.zhit.model.Author;
 import br.com.caelum.zhit.model.GitBranch;
 import br.com.caelum.zhit.model.GitCommit;
 import br.com.caelum.zhit.model.GitRepository;
+import br.com.caelum.zhit.model.GitTag;
 import br.com.caelum.zhit.model.GitTree;
 import br.com.caelum.zhit.model.internal.GitObject;
 import br.com.caelum.zhit.model.internal.RawGitTreeEntry;
@@ -27,6 +28,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText(author.toString());
 			}
+			@Override
 			protected boolean matchesSafely(Author testingAuthor) {
 				boolean sameName = author.name().equals(testingAuthor.name());
 				boolean sameEmail = author.email().equals(testingAuthor.email());
@@ -43,6 +45,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText(commit.toString());
 			}
+			@Override
 			protected boolean matchesSafely(GitCommit testingCommit) {
 				GitObject<GitTree> tree = commit.treeObject();
 				boolean sameTree = sameSha1(tree.sha1()).matches(tree.sha1());
@@ -60,6 +63,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText(tree.toString());
 			}
+			@Override
 			protected boolean matchesSafely(GitTree testingTree) {
 				boolean matches = true;
 				List<RawGitTreeEntry> entries = testingTree.entries();
@@ -79,6 +83,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText(sha1.toString());
 			}
+			@Override
 			protected boolean matchesSafely(Sha1 testingSha1) {
 				return sha1.hash().equals(testingSha1.hash());
 			}
@@ -91,6 +96,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText(entry.toString());
 			}
+			@Override
 			protected boolean matchesSafely(RawGitTreeEntry testingEntry) {
 				boolean samePermissions = testingEntry.permissions().equals(entry.permissions());
 				boolean sameType = testingEntry.type().equals(entry.type());
@@ -105,6 +111,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText("a valid commit content with tree, author and committer");
 			}
+			@Override
 			protected boolean matchesSafely(String commit) {
 				return commit.contains("author") && commit.contains("tree") && commit.contains("committer");
 			}
@@ -117,6 +124,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText("a valid non bare repository");
 			}
+			@Override
 			protected boolean matchesSafely(GitRepository repository) {
 				try {
 					File repositoryRoot = repository.path();
@@ -143,6 +151,7 @@ public class ZhitMatchers {
 			public void describeTo(Description description) {
 				description.appendText("a valid bare repository");
 			}
+			@Override
 			protected boolean matchesSafely(GitRepository repository) {
 				try {
 					File repositoryRoot = repository.path();
@@ -170,6 +179,29 @@ public class ZhitMatchers {
 			@Override
 			protected boolean matchesSafely(GitBranch original) {
 				return original.name().equals(expected.name()) && sameSha1(original.sha1()).matches(expected.sha1());
+			}
+		};
+	}
+
+	@Factory
+	public static Matcher<GitTag> sameGitTag(final GitTag expected) {
+		return new TypeSafeMatcher<GitTag>() {
+			@Override
+			public void describeTo(Description desc) {
+				desc.appendText(expected.toString());
+			}
+			@Override
+			protected boolean matchesSafely(GitTag original) {
+				String message = original.message();
+				if(message != null && message.isEmpty()) {
+					return sameSha1(original.commit()).matches(expected.commit());
+				}
+				return sameSha1(original.commit()).matches(expected.commit()) &&
+						original.type().equals(expected.type()) &&
+						sameAuthor(original.tagger()).matches(expected.tagger()) &&
+						original.createdAt().equals(expected.createdAt()) &&
+						original.tagName().equals(expected.tagName()) &&
+						original.message().equals(expected.message());
 			}
 		};
 	}

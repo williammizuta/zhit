@@ -72,6 +72,10 @@ public final class GitRepository {
 		return new GitObject<GitBlob>(sha1, this, new GitBlobInflater()).extract(new GitBlobParser());
 	}
 
+	public GitCommit parseCommit(Sha1 sha1) {
+		return new GitObject<GitCommit>(sha1, this, new GitCommitInflater()).extract(new GitCommitParser(this));
+	}
+
 	public List<GitBranch> localBranches() {
 		Set<GitBranch> branches = new TreeSet<GitBranch>(branchComparator());
 
@@ -108,16 +112,16 @@ public final class GitRepository {
 		String sha = readFileToString(branch).trim();
 		branches.add(new GitBranch(name, new Sha1(sha)));
 	}
-	
+
 	private void addBranch(Collection<GitBranch> branches, File branch) {
 		addBranch(branches, "", branch);
 	}
-	
+
 	private Comparator<GitBranch> branchComparator() {
 		return new Comparator<GitBranch>() {
 			@Override
 			public int compare(GitBranch b1, GitBranch b2) {
-				return (b1.name().compareTo(b2.name()));			
+				return (b1.name().compareTo(b2.name()));
 			}
 		};
 	}
@@ -129,4 +133,5 @@ public final class GitRepository {
 		}
 		return packedRefs.sha1(headBranch);
 	}
+
 }

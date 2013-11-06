@@ -1,6 +1,7 @@
 package br.com.caelum.zhit.model;
 
 import static br.com.caelum.zhit.matchers.ZhitMatchers.sameBranch;
+import static br.com.caelum.zhit.matchers.ZhitMatchers.sameGitCommit;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
@@ -9,7 +10,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import br.com.caelum.zhit.builder.AuthorBuilder;
-import br.com.caelum.zhit.matchers.ZhitMatchers;
+import br.com.caelum.zhit.builder.GitCommitBuilder;
 import br.com.caelum.zhit.model.internal.Sha1;
 
 public class GitRepositoryTest {
@@ -77,8 +77,14 @@ public class GitRepositoryTest {
 	public void should_create_a_commit_based_on_a_sha1() {
 		GitRepository repository = GitRepository.bare(new File("src/test/resources/sample-with-history"));
 
+		Author author = new AuthorBuilder().withName("Francisco Sokol").withEmail("chico.sokol@gmail.com").create();
+		GitCommit expected = new GitCommitBuilder(repository).from(author)
+				.parents(new Sha1("52a3dea7240eae5fa0fe435783bb287d5488f0be"))
+				.at(new DateTime(1380892979, forOffsetHoursMinutes(-3, 0)))
+				.withTree(new Sha1("d4db8957618b02a72fe78f192e528169bd197a21"))
+				.withMessage("second commit").create();
+
 		GitCommit commit = repository.parseCommit(new Sha1("b82da37b7455f932c3db398bece665aeac451ac8"));
-		GitCommit expected = new GitCommit(new AuthorBuilder().withName("Francisco Sokol").withEmail("chico.sokol@gmail.com").create(), "second commit", new Sha1("d4db8957618b02a72fe78f192e528169bd197a21"), Arrays.asList(new Sha1("52a3dea7240eae5fa0fe435783bb287d5488f0be")), repository, new DateTime(1380892979, forOffsetHoursMinutes(-3, 0)));
-		assertThat(commit, ZhitMatchers.sameGitCommit(expected));
+		assertThat(commit, sameGitCommit(expected));
 	}
 }
